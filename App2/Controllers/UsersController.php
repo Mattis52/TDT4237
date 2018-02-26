@@ -28,7 +28,6 @@ class UsersController extends Controller {
     */
     public function add() {
         if(!empty($_POST)) {
-            echo $_POST;
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
             $email                 = isset($_POST['email']) ? $_POST['email'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
@@ -38,7 +37,7 @@ class UsersController extends Controller {
             $validator->validUsername('username', $username, "Your username is not valid (no spaces, uppercase, special character)");
             $validator->availableUsername('username', $username, "Your username is not available");
             $validator->validEmail('email', $email, "Your email is not valid");
-            $validator->validPassword('password', $username, $password, $password_verification); // Changed, by removing the message
+            $validator->validPassword('password', $password, $password_verification, "You didn't write the same password twice");
 
             if($validator->isValid()) {
                 $model = new UsersModel();
@@ -81,10 +80,9 @@ class UsersController extends Controller {
             }
            
             $validator->availableUsername('username', $username, "Your username is not available");
-            echo "In registrationIsValid";
             
             if ($validator->notEmpty('password',$password, "Your password can't be empty")){
-                $validator->validPassword('password2', $username, $password, $password_verification); // Changed, added so it sends username too
+                $validator->validPassword('password2', $password, $password_verification, "You didn't write the same password twice");
             }
             
             if($validator->isValid()) {
@@ -101,8 +99,7 @@ class UsersController extends Controller {
                     'username'   => $username,
                     'password'   => hash('sha1', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
-                    'admin'      => 0,
-                    'email'      => 'test@test.com' // Added because of error when there is no default for email
+                    'admin'      => 0
                 ]);
     }
     
