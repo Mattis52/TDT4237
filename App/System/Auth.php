@@ -28,7 +28,10 @@ class Auth{
 
     public function isAdmin(){
         if ($this->isLoggedIn()){
-            if ($_COOKIE['admin'] === 'yes'){
+          //$logged_in_username = $_SESSION['auth']; // Changed
+            $is_admin = '1';
+            //$is_admin = $this->userRep.getAdmin($username); // Changed
+            if ($is_admin === '1'){ // Changed
                 return true;
             }else{
                 return false;
