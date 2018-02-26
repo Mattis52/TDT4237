@@ -7,6 +7,26 @@ use \App\System\Settings;
 use \App\Models\UsersModel;
 
 session_start();
+echo "Session_start is called";
+// Just during testing
+/*
+public function reset_session() {
+    $_SESSION['failed_attempts'] = 0;
+    $_SESSION['time_lockout'] = 0;
+}
+*/
+//$this->reset_session();
+// This is added
+if ($_SESSION['failed_attempts'] == null) {
+    echo "Failed attempts are null";
+    $_SESSION['failed_attempts'] = 0;
+}
+
+if ($_SESSION['time_lockout'] == null) {
+    $_SESSION['time_lockout'] = 0;
+}
+
+
 
 $app    = new App();
 $router = new Router($_GET);
