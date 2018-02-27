@@ -23,6 +23,7 @@ class SessionsController extends Controller {
                 session_regenerate_id(); // Added
                 setcookie("user", $username);
                 setcookie("password",  $_POST['password']);
+                // TODO: Could maybe also just delete this?
                 if ($this->userRep->getAdmin($username)){
                     setcookie("admin", 'yes');
                 }else{
@@ -74,7 +75,7 @@ class SessionsController extends Controller {
       echo "Calling logout in SessionsController";
         session_destroy(); // Added
         setcookie('user', '', time()-3600); // Added
-        App::redirect();
+        //App::redirect();
     }
 
     // Added NOT WORKING
