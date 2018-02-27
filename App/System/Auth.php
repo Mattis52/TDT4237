@@ -30,9 +30,8 @@ class Auth{
     
     public function isAdmin(){
         if ($this->isLoggedIn()){
-          //$logged_in_username = $_SESSION['auth']; // Changed
-            $is_admin = '1';
-            //$is_admin = $this->userRep.getAdmin($username); // Changed
+            $logged_in_username = $_SESSION['auth']; // Changed
+            $is_admin = $this->userRep->getAdmin($logged_in_username); // Changed
             if ($is_admin === '1'){ // Changed
                 return true;
             }else{

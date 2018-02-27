@@ -223,7 +223,10 @@ class UsersController extends Controller {
     }
 
     public function logout() {
-        session_destroy(); // TODO: checkout, is this one called when logged out, thought not in SessionsController.logout?
+        setcookie('user', '', time()-3600); // Added
+        setcookie('admin', '', time()-3600); // Added
+        setcookie('password', '', time()-3600); // Added
+        session_destroy();
         App::redirect();
     }
 
