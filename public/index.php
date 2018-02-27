@@ -6,14 +6,10 @@ use \App\System\Router\Router;
 use \App\System\Settings;
 use \App\Models\UsersModel;
 
-//ini_set('session.gc_maxlifetime', 30); // Added, the server should keep session data for at least 1 hour Change 50 3600
-//session_set_cookie_params(60); // Added, each client should remember their session id for exactly 1 hour  Change 50 3600
-
 ini_set('session.cookie_httponly', 1); // Added
 //ini_set('session.cookie_secure', 1); // Added 
 session_start();
 //session.setMaxInactiveInterval(1);
-echo "Session_start is called";
 
 
 // Just during testing
@@ -26,13 +22,14 @@ public function reset_session() {
 //$this->reset_session();
 // This is added
 if ($_SESSION['failed_attempts'] == null) {
-    echo "Failed attempts are null";
     $_SESSION['failed_attempts'] = 0;
 }
 
-if ($_SESSION['time_lockout'] == null) {
-    $_SESSION['time_lockout'] = 0;
+if ($_SESSION['time_lockout_sec'] == null) {
+    $_SESSION['time_lockout_sec'] = 0;
 }
+// echo "Failed attempts: " . $_SESSION['failed_attempts'];
+//echo "Time lockout: " . $_SESSION['time_lockout'];
 
 // Added this
 $expiresAfter = 30;
