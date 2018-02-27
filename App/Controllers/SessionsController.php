@@ -70,8 +70,10 @@ class SessionsController extends Controller {
         ]);
     }
 
-    public function logout() {
+    public function logout() { // TODO: is this every used?
+      echo "Calling logout in SessionsController";
         session_destroy(); // Added
+        setcookie('user', '', time()-3600); // Added
         App::redirect();
     }
 
