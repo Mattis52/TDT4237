@@ -7,19 +7,21 @@
                 {% for category in categories %}
                     <div class="category-element">
                         <div class="category">
-                            <div class="category-actions">
-                                <div class="category-actions-delete">
-                                    <a href="{{ url('categories/' ~ category.id ~ '/delete') }}">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </div>
+                            {% if category.user == auth %}
+                                <div class="category-actions">
+                                    <div class="category-actions-delete">
+                                        <a href="{{ url('categories/' ~ category.id ~ '/delete') }}">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
 
-                                <div class="category-actions-edit">
-                                    <a href="{{ url('categories/' ~ category.id ~ '/edit') }}">
-                                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                                    </a>
+                                    <div class="category-actions-edit">
+                                        <a href="{{ url('categories/' ~ category.id ~ '/edit') }}">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
 
                             <h2 class="category-title">{{ category.title | raw}}</h2>
                             <p class="category-description">{{ excerpt(category.description, 220) | raw}}</p>

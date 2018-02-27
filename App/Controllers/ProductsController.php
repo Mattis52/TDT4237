@@ -155,105 +155,120 @@ class ProductsController extends Controller {
     }
 
     public function edit($id) {
-        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
-            $title       = isset($_POST['title']) ? $_POST['title'] : '';
-            $description = isset($_POST['description']) ? $_POST['description'] : '';
-            $category    = isset($_POST['category']) ? $_POST['category'] : '';
-            $price       = isset($_POST['price']) ? (int) $_POST['price'] : '';
-            $quantity    = isset($_POST['quantity']) ? (int) $_POST['quantity'] : '';
+        $model = new ProductsModel(); // Added
+        $product = $model->find($id); // Added 
+        if ($this->isOwner($product)) { // Added loop
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
+                $title       = isset($_POST['title']) ? $_POST['title'] : '';
+                $description = isset($_POST['description']) ? $_POST['description'] : '';
+                $category    = isset($_POST['category']) ? $_POST['category'] : '';
+                $price       = isset($_POST['price']) ? (int) $_POST['price'] : '';
+                $quantity    = isset($_POST['quantity']) ? (int) $_POST['quantity'] : '';
 
-            $validator = new FormValidator();
-            $validator->notEmpty('title', $title, "Your title must not be empty");
-            $validator->notEmpty('description', $description, "Your description must not be empty");
-            $validator->validCategory('category', $category, "Your category must be valid");
-            $validator->isNumeric('price', $price, "Your price must be a number");
-            $validator->isInteger('quantity', $quantity, "Your quantity must be a number");
+                $validator = new FormValidator();
+                $validator->notEmpty('title', $title, "Your title must not be empty");
+                $validator->notEmpty('description', $description, "Your description must not be empty");
+                $validator->validCategory('category', $category, "Your category must be valid");
+                $validator->isNumeric('price', $price, "Your price must be a number");
+                $validator->isInteger('quantity', $quantity, "Your quantity must be a number");
 
-            if($validator->isValid()) {
-                $model = new ProductsModel();
-                $model->update($id, [
-                    'title'       => $title,
-                    'description' => $description,
-                    'category'    => $category,
-                    'price'       => $price,
-                    'quantity'    => $quantity
-                ]);
+                if($validator->isValid()) {
+                    $model = new ProductsModel();
+                    $model->update($id, [
+                        'title'       => $title,
+                        'description' => $description,
+                        'category'    => $category,
+                        'price'       => $price,
+                        'quantity'    => $quantity
+                    ]);
 
-                $revisions = new RevisionsModel();
-                $revisions->create([
-                    'type'    => 'products',
-                    'type_id' => $id,
-                    'user'    => $_SESSION['auth']
-                ]);
+                    $revisions = new RevisionsModel();
+                    $revisions->create([
+                        'type'    => 'products',
+                        'type_id' => $id,
+                        'user'    => $_SESSION['auth']
+                    ]);
 
-                App::redirect('products');
+                    App::redirect('products');
+                }
+
+                else {
+                    $model = new CategoriesModel();
+                    $categories  = $model->all();
+
+                    $model2 = new RevisionsModel();
+                    $revisions = $model2->revisions($id, 'products');
+
+                    $this->render('pages/products_add.twig', [
+                        'title'       => 'Edit product',
+                        'description' => 'Products - Just a simple inventory management system.',
+                        'page'        => 'products',
+                        'errors'      => $validator->getErrors(),
+                        'revisions'   => $revisions,
+                        'categories'  => $categories,
+                        'data'        => [
+                            'title'       => $title,
+                            'description' => $description,
+                            'price'       => $price,
+                            'quantity'    => $quantity,
+                            'category'    => $category
+                        ]
+                    ]);
+                }
             }
 
             else {
                 $model = new CategoriesModel();
                 $categories  = $model->all();
 
-                $model2 = new RevisionsModel();
-                $revisions = $model2->revisions($id, 'products');
+                $model2 = new ProductsModel();
+                $data   = $model2->find($id);
 
-                $this->render('pages/products_add.twig', [
+                $model3 = new RevisionsModel();
+                $revisions = $model3->revisions($id, 'products');
+
+                $this->render('pages/products_edit.twig', [
                     'title'       => 'Edit product',
                     'description' => 'Products - Just a simple inventory management system.',
                     'page'        => 'products',
-                    'errors'      => $validator->getErrors(),
                     'revisions'   => $revisions,
-                    'categories'  => $categories,
-                    'data'        => [
-                        'title'       => $title,
-                        'description' => $description,
-                        'price'       => $price,
-                        'quantity'    => $quantity,
-                        'category'    => $category
-                    ]
+                    'data'        => $data,
+                    'categories'  => $categories
                 ]);
             }
         }
-
         else {
-            $model = new CategoriesModel();
-            $categories  = $model->all();
-
-            $model2 = new ProductsModel();
-            $data   = $model2->find($id);
-
-            $model3 = new RevisionsModel();
-            $revisions = $model3->revisions($id, 'products');
-
-            $this->render('pages/products_edit.twig', [
-                'title'       => 'Edit product',
-                'description' => 'Products - Just a simple inventory management system.',
-                'page'        => 'products',
-                'revisions'   => $revisions,
-                'data'        => $data,
-                'categories'  => $categories
-            ]);
+            echo "You don't own this product, and thereby you can't edit it.";
+            App::error403();
         }
     }
 
     public function delete($id) {
-        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
-            $model = new ProductsModel();
-            $file  = $model->find($id)->media;
-            unlink(__DIR__ . '/../../public/uploads/' . $file);
-            $model->delete($id);
+        $model = new ProductsModel();
+        if ($this->isOwner($model->find($id))) {
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
+                $file  = $model->find($id)->media;
+                unlink(__DIR__ . '/../../public/uploads/' . $file);
+                $model->delete($id);
 
-            App::redirect('products');
-        }
+                App::redirect('products');
+            }
+
+            else {
+                $model = new ProductsModel();
+                $data  = $model->find($id);
+                $this->render('pages/products_delete.twig', [
+                    'title'       => 'Delete product',
+                    'description' => 'Products - Just a simple inventory management system.',
+                    'page'        => 'products',
+                    'data'        => $data
+                ]);
+            }
+        } 
 
         else {
-            $model = new ProductsModel();
-            $data  = $model->find($id);
-            $this->render('pages/products_delete.twig', [
-                'title'       => 'Delete product',
-                'description' => 'Products - Just a simple inventory management system.',
-                'page'        => 'products',
-                'data'        => $data
-            ]);
+            echo "You don't own this product, and thereby can't delete it.";
+            App::error403();
         }
     }
 
@@ -300,7 +315,14 @@ class ProductsController extends Controller {
     }
     
     public function viewSQL($id) {
-        echo var_dump($this->productRep->find($id)); die;
+        $product = $this->productRep->find($id); // Added
+        if ($this->isOwner($product)) { // Added 
+            echo var_dump($this->productRep->find($id)); die;
+        } 
+        else { // Added
+            App::error403();
+            echo "You don't own this product.";
+        }
     }
-    
+
 }
