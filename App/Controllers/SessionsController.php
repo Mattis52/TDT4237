@@ -16,9 +16,24 @@ class SessionsController extends Controller {
         $_SESSION['time_lockout'] = 0;
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {            
             $username = isset($_POST['username']) ? $_POST['username'] : '';
+
             $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
             
-            if($this->auth->checkCredentials($username, $password) and !$_SESSION['time_lockout'] = 0) {
+            $refresh = $_SESSION['last_password']  === $password;
+            $locked_out = $_SESSION['locked_until'] > time();
+
+            if ($locked_out or $refresh) {
+              if ($locked_out) {
+                $errors = [
+                  "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds, and the admin is informed."
+                ];
+              }
+              else if (isset($_SESSION['locked_until']) and $_SESSION['locked_until'] < time()) {
+                echo "Should lockup now";
+              }
+            } 
+            else { 
+              if($this->auth->checkCredentials($username, $password) and !$_SESSION['time_lockout'] = 0) {
                 $_SESSION['failed_attempts'] = 0; // Added
                 session_regenerate_id(); // Added
                 setcookie("user", $username);
@@ -34,40 +49,47 @@ class SessionsController extends Controller {
                 $_SESSION['email']      = $this->userRep->getEmail($username);
                 $_SESSION['password']   = $password;
 
-                App::redirect('dashboard');
-            }
-
-            else {
-              echo "before: " . $_SESSION['failed_attempts'];
-              $_SESSION['failed_attempts'] = ++$_SESSION['failed_attempts']; // = $_SESSION['failed_attempts'] + 1;
-              echo $_SESSION['failed_attempts'];
-              $errors = [
-                  "Your username and your password don't match."
-              ];
-              if( $_SESSION['failed_attempts'] < 3) {
-                array_push($errors, "You have had " . $_SESSION['failed_attempts'] . " failed logins. After 3, your account will be locked for an increasing timeinvertal, and the admin will be informed.");
+                App::redirects('dashoard')
               }
-              else if( $_SESSION['failed_attempts'] == 3) {
-                // Lock account
-                $_SESSION['time_lockout'] = true;
-                array_push($errors, "You have had 3 failed logins. Your account is now locked for 30 seconds, and the admin is informed.");
-                // Start time interval
-                $this->increase_session_lockout();
-                $time_lockout = true;
-
-              } else if ( $_SESSION['failed_attempts'] >3) {
-                // Increase time interval
-                $this->increase_session_lockout();
-                $time_lockout = true;
+              else {
+                $errors = [
+                    "Your username and your password don't match."
+                ];
+                if (!$refresh) {
+                  $_SESSION['failed_attempts'] = ++$_SESSION['failed_attempts'];  // Added
+                }
+                if( $_SESSION['failed_attempts'] < 3 and !$refresh) {
+                  array_push($errors, "You have had " . $_SESSION['failed_attempts'] . " failed logins. After 3, your account will be locked for an increasing timeinterval, and the admin will be informed.");
+                }
+                else if( $_SESSION['failed_attempts'] == 3 and !$refresh) {
+                  // Warn admin
+                  $model = new UsersModel();
+                  $email_addr = $model->getEmail('root'); // Assumes admin is named "root" 
+                  $message = 'Somebody from are trying to log in and have spent ' . $_SESSION['failed_attempts'] . ' attempts.';
+                  // TODO: don't know how to get IP adress or something similar
+                  mail($email_addr, 'To many attempts at login', $message);
+                  // Start time interval
+                  $this->increase_session_lockout();
+                  array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds, and the admin is informed.");
+                } 
+                else if ( $_SESSION['failed_attempts'] >3) {
+                  // Increase time interval
+                  $this->increase_session_lockout();
+                }
+                //App::redirect('signin'); // Added, to empty POST form
               }
-            }
+              $_SESSION['last_password'] = $_POST['password'];
+          }
         }
+
+        // Update sec left showed to user
+        $_SESSION['time_lockout_sec'] = $_SESSION['locked_until'] - time();
 
         $this->render('pages/signin.twig', [
             'title'       => 'Sign in',
             'description' => 'Sign in to the dashboard',
             'errors'      => isset($errors) ? $errors : '',
-            'time_lockout' => isset($time_lockout) ? $time_lockout : false,
+            'time_lockout_sec' => $_SESSION['time_lockout_sec'],
         ]);
     }
 
@@ -75,37 +97,19 @@ class SessionsController extends Controller {
       echo "Calling logout in SessionsController";
         session_destroy(); // Added
         setcookie('user', '', time()-3600); // Added
-        //App::redirect();
+        App::redirect();
     }
-
-    // Added NOT WORKING
-    function setInterval($sec) {
-      echo "Setting interval: " .  $sec;
-      while (true) {
-        //sleep($sec);
-        $this->open_account();
-      }
-    }
+    
     // Added
     private function increase_session_lockout() {
-      $new_time;
-      if ($_SESSION['time_lockout'] == 0) {
+      $last_time = $_SESSION['failed_attempts'] ** 2; // TODO: not correct algorithm
+      $new_time = 0;
+      if ($_SESSION['failed_attempts'] == 3) {
         $new_time = 60;
-        $_SESSION['time_lockout'] = 60;
+        $_SESSION['time_lockout_sec'] = 60;
       } else {
-        $new_time = $_SESSION['time_lockout']**2;
+        $new_time = $last_time**2;
       }
-      //$timeout = $this->setInterval($new_time);
-    }
-
-    // Added
-    private function open_account() {
-      $_SESSION['failed_attempts'] = 0;
-      $this->render('pages/signin.twig', [
-            'title'       => 'Sign in',
-            'description' => 'Sign in to the dashboard',
-            'errors'      => isset($errors) ? $errors : ''
-        ]);
-
+      $_SESSION['locked_until'] = time() + $new_time;
     }
 }
