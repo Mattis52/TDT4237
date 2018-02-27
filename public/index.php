@@ -6,8 +6,15 @@ use \App\System\Router\Router;
 use \App\System\Settings;
 use \App\Models\UsersModel;
 
+//ini_set('session.gc_maxlifetime', 30); // Added, the server should keep session data for at least 1 hour Change 50 3600
+//session_set_cookie_params(60); // Added, each client should remember their session id for exactly 1 hour  Change 50 3600
+
+ini_set('session.cookie_httponly', 1); // Added
+//ini_set('session.cookie_secure', 1); // Added 
 session_start();
 echo "Session_start is called";
+
+
 // Just during testing
 /*
 public function reset_session() {
@@ -26,7 +33,18 @@ if ($_SESSION['time_lockout'] == null) {
     $_SESSION['time_lockout'] = 0;
 }
 
+// Added this
+$expiresAfter = 30;
+if(isset($_SESSION['last_active'])) {
+    $secondsInactive = time() - $_SESSION['last_active'];
+    $expiresAfterSeconds = $expiresAfter * 60;
+    if ($secondsInactive >= $expiresAfterSeconds) { // TODO: maybe add something so that this doesn't become a workaround the lockout mechanism when logging in?
+        session_unset();
+        session_destroy();
+    }
+}
 
+$_SESSION['last_active'] = time(); // added
 
 $app    = new App();
 $router = new Router($_GET);

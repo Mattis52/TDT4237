@@ -45,4 +45,17 @@ class Controller {
             echo App::getTwig()->render($template, $attributes);
         }
     }
+
+    // Added
+    public function isOwner($object) {
+        $owner = $object->user;
+        echo "Auth: " . $_SESSION['auth'];
+        if ($owner === $_SESSION['auth']) {
+            echo var_dump($object);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

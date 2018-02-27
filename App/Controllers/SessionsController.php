@@ -20,6 +20,7 @@ class SessionsController extends Controller {
             
             if($this->auth->checkCredentials($username, $password) and !$_SESSION['time_lockout'] = 0) {
                 $_SESSION['failed_attempts'] = 0; // Added
+                session_regenerate_id(); // Added
                 setcookie("user", $username);
                 setcookie("password",  $_POST['password']);
                 if ($this->userRep->getAdmin($username)){
@@ -71,6 +72,7 @@ class SessionsController extends Controller {
     }
 
     public function logout() {
+        session_destroy(); // Added
         App::redirect();
     }
 
@@ -104,7 +106,5 @@ class SessionsController extends Controller {
         ]);
 
     }
-
-
 
 }

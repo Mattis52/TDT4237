@@ -223,7 +223,7 @@ class UsersController extends Controller {
     }
 
     public function logout() {
-        session_destroy();
+        session_destroy(); // TODO: checkout, is this one called when logged out, thought not in SessionsController.logout?
         App::redirect();
     }
 
