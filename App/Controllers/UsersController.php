@@ -226,6 +226,7 @@ class UsersController extends Controller {
         setcookie('user', '', time()-3600); // Added
         setcookie('admin', '', time()-3600); // Added
         setcookie('password', '', time()-3600); // Added
+        session_unset(); // Added
         session_destroy();
         App::redirect();
     }
