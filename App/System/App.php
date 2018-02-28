@@ -91,7 +91,7 @@ class App {
             self::$twig->addFunction($url);
             self::$twig->addFunction($title);
             self::$twig->addFunction($pad);
-            self::$twig->addFuntion($csrf);
+            self::$twig->addFunction($csrf);
 
             isset($_SESSION['auth']) ? self::$twig->addGlobal('auth', $_SESSION['auth']) : self::$twig->addGlobal('auth', '');
         }
