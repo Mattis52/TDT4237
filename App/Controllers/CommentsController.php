@@ -11,7 +11,7 @@ class CommentsController extends Controller {
     protected $table = "comments";
 
     public function add() {
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"]) ){
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"]) ){
                 $text  = isset($_POST['comment']) ? $_POST['comment'] : '';
                 $model = new CommentsModel;
                 $model->create([

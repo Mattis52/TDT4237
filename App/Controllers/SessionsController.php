@@ -11,7 +11,7 @@ use \App\System\Auth;
 class SessionsController extends Controller {
 
     public function login() {
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"])) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             
             $username = isset($_POST['username']) ? $_POST['username'] : '';
             //$password = isset($_POST['password']) ? hash('sha1', Settings::getConfig()['salt'] . $_POST['password']) : '';

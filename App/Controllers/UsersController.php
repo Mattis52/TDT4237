@@ -27,7 +27,7 @@ class UsersController extends Controller {
     This function is used when the administrator adds a user from the administrator dashboard
     */
     public function add() {
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"])) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
             $email                 = isset($_POST['email']) ? $_POST['email'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
@@ -107,7 +107,7 @@ class UsersController extends Controller {
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
         $validator = New FormValidator;
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"])) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
             $password_verification = isset($_POST['password_verification']) ? $_POST['password_verification'] : '';
@@ -143,7 +143,7 @@ class UsersController extends Controller {
     }
 
     public function edit($id) {
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"])) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username = isset($_POST['username']) ? $_POST['username'] : '';
             $email    = isset($_POST['email']) ? $_POST['email'] : '';
 
@@ -196,7 +196,7 @@ class UsersController extends Controller {
     }
 
     public function delete($id) {
-        if(!empty($_POST) And Auth::checkCSRF($_POST["token"])) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $model = new UsersModel();
             $model->delete($id);
 
