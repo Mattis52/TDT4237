@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 use \App\System\App;
+
+use \App\System\Auth;
 use \App\System\ImageUpload;
 use \App\System\Settings;
 use \App\Controllers\Controller;

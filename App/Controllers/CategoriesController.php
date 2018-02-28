@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\ProductsModel;
 use \App\System\App;
+use \App\System\Auth;
 use \App\System\FormValidator;
 use \App\System\Settings;
 use \App\Controllers\Controller;

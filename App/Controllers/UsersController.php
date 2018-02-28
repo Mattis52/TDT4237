@@ -7,6 +7,7 @@ use \App\System\FormValidator;
 use \App\Controllers\Controller;
 use \App\Models\UsersModel;
 use \App\System\Mailer;
+use \App\System\Auth;
 
 class UsersController extends Controller {
 

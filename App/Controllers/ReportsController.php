@@ -7,6 +7,7 @@ use \App\System\Settings;
 use \App\System\Mailer;
 use \App\Controllers\Controller;
 use \App\Models\ReportsModel;
+use \App\System\Auth;
 use \DateTime;
 
 class ReportsController extends Controller {
