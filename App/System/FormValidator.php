@@ -24,10 +24,33 @@ class FormValidator {
         }
     }
 
-    public function validPassword($element, $value, $value_verification, $message) {
-        if(empty($value) || ($value != $value_verification)) {
-            $this->errors[$element] = $message;
+    // Changed this one
+    public function validPassword($element, $username, $value, $value_verification) {
+        // At least 10 character        
+        if (strlen($value) < 10) {
+            $this->errors[$element] = "The password must be at least 10 characters";
         }
+        // Include number
+        else if (!preg_match('~[0-9]~', $value)) {
+            $this->errors[$element] = "The password must contain at least one number";
+        } 
+        // Include Uppercase
+        else if (!preg_match('~[A-Z]~', $value)) {
+            $this->errors[$element] = "The password must contain at least one character in uppercase";
+          //Not a dictionary word
+        // } else if () {
+
+          // Numbers and letters are not in sequence
+        //} else if () {
+        } 
+        // Doesn't contain username
+        else if (preg_match('/' . $username . '/', $value)) {
+            $this->errors[$element] = "The password can't contain the username";
+        } 
+        else if (empty($value) || ($value != $value_verification)) {
+            $this->errors[$element] = "You didn't write the same password twice";
+        }
+        // echo "At the end: " . json_encode($this->errors);
     }
 
     public function validUsername($element, $value, $message) {

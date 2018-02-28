@@ -6,7 +6,47 @@ use \App\System\Router\Router;
 use \App\System\Settings;
 use \App\Models\UsersModel;
 
+ini_set('session.cookie_httponly', 1); // Added
+//ini_set('session.cookie_secure', 1); // Added 
 session_start();
+//session.setMaxInactiveInterval(1);
+
+
+// Just during testing
+/*
+public function reset_session() {
+    $_SESSION['failed_attempts'] = 0;
+    $_SESSION['time_lockout'] = 0;
+}
+*/
+//$this->reset_session();
+// This is added
+if ($_SESSION['failed_attempts'] == null) {
+    $_SESSION['failed_attempts'] = 0;
+}
+
+if ($_SESSION['time_lockout_sec'] == null) {
+    $_SESSION['time_lockout_sec'] = 0;
+}
+// echo "Failed attempts: " . $_SESSION['failed_attempts'];
+//echo "Time lockout: " . $_SESSION['time_lockout'];
+
+// Added this
+$expiresAfter = 30;
+if(isset($_SESSION['last_active'])) {
+    $secondsInactive = time() - $_SESSION['last_active'];
+    $expiresAfterSeconds = $expiresAfter * 60;
+    if ($secondsInactive >= $expiresAfterSeconds) { // TODO: maybe add something so that this doesn't become a workaround the lockout mechanism when logging in?
+        setcookie('user', '', time()-3600); // Added
+        setcookie('admin', '', time()-3600); // Added
+        setcookie('password', '', time()-3600); // Added
+        session_unset();
+        session_destroy();
+        App::redirect();
+    }
+}
+
+$_SESSION['last_active'] = time(); // added
 
 $app    = new App();
 $router = new Router($_GET);
