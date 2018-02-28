@@ -26,9 +26,9 @@ class FormValidator {
 
     // Changed this one
     public function validPassword($element, $username, $value, $value_verification) {
-        // At least 7 character        
+        // At least 10 character        
         if (strlen($value) < 7) {
-            $this->errors[$element] = "The password must be at least 7 characters";
+            $this->errors[$element] = "The password must be at least 10 characters";
         }
         // Include number
         else if (!preg_match('~[0-9]~', $value)) {
