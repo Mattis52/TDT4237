@@ -91,12 +91,14 @@ class FormValidator {
     }
 
     public function validImage($element, $value, $message) {
+        $valid_filetypes = array(".jpeg", ".png"); // Added
+        // $file_type = str_split($value)[0]; // Addeed
         if(empty($value)) {
             $this->errors[$element] = $message;
         }
 
         else {
-            if(empty($value['type'])) {
+            if(empty($value['type']) or in_array($value['type'], $valid_filetypes)) { // Changed
                 $this->errors[$element] = $message;
                 return;
             }
