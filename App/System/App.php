@@ -19,6 +19,8 @@ class App {
             error_reporting(0);
             ini_set('display_errors', 0);
         }
+
+       
     }
 
     public static function getDb() {
@@ -65,12 +67,31 @@ class App {
                 else return Settings::getConfig()['name'];
             });
 
+            $csrf = 
+                new \Twig_SimpleFunction(
+                    'form_token',
+                    function($lock_to = null) {
+                        if (empty($_SESSION['token'])) {
+                            $_SESSION['token'] = bin2hex(random_bytes(32));
+                        }
+                        if (empty($_SESSION['token2'])) {
+                            $_SESSION['token2'] = random_bytes(32);
+                        }
+                        if (empty($lock_to)) {
+                            return $_SESSION['token'];
+                        }
+                        return hash_hmac('sha256', $lock_to, $_SESSION['token2']);
+                    }
+                );
+            
 
+            
             self::$twig->addFunction($asset);
             self::$twig->addFunction($excerpt);
             self::$twig->addFunction($url);
             self::$twig->addFunction($title);
             self::$twig->addFunction($pad);
+            self::$twig->addFuntion($csrf);
 
             isset($_SESSION['auth']) ? self::$twig->addGlobal('auth', $_SESSION['auth']) : self::$twig->addGlobal('auth', '');
         }

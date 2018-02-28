@@ -41,6 +41,7 @@
                     <div class="form-control">
                         <label for="password_verification">Repeat password</label>
                         <input type="password" name="password_verification" placeholder="Repeat your password" id="password_verification" class="{{ errors.password ? 'errors-border' : '' }}">
+                        <input type="hidden" name="token" value="{{ form_token() }}" />
                     </div>
                 </div>
             </div>
