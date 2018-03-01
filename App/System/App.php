@@ -77,10 +77,10 @@ class App {
                         if (empty($_SESSION['token2'])) {
                             $_SESSION['token2'] = random_bytes(32);
                         }
-                        if (empty($lock_to)) {
+                        //if (empty($lock_to)) {
                             return $_SESSION['token'];
-                        }
-                        return hash_hmac('sha256', $lock_to, $_SESSION['token2']);
+                        //}
+                        //return hash_hmac('sha256', $lock_to, $_SESSION['token2']);
                     }
                 );
             
