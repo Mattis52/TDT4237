@@ -18,9 +18,17 @@ class App {
         else {
             error_reporting(0);
             ini_set('display_errors', 0);
-        }
+        }}
+    public static function createCSRF(){
+        $_SESSION['token'] = bin2hex(random_bytes(32));
+    //if (empty($_SESSION['token2'])) {
+        //  $_SESSION['token2'] = random_bytes(32);
+    //}
+    //if (empty($lock_to)) {
+        return $_SESSION['token'];
+    //}
+    //return hash_hmac('sha256', $lock_to, $_SESSION['token2']);
 
-       
     }
 
     public static function getDb() {
@@ -69,19 +77,7 @@ class App {
 
             $csrf = 
                 new \Twig_SimpleFunction(
-                    'form_token',
-                    function($lock_to = null) {
-                       // if (empty($_SESSION['token'])) {
-                            $_SESSION['token'] = bin2hex(random_bytes(32));
-                        //}
-                        //if (empty($_SESSION['token2'])) {
-                          //  $_SESSION['token2'] = random_bytes(32);
-                        //}
-                        //if (empty($lock_to)) {
-                            return $_SESSION['token'];
-                        //}
-                        //return hash_hmac('sha256', $lock_to, $_SESSION['token2']);
-                    }
+                    'form_token', App::createCSRF()
                 );
             
 
