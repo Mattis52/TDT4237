@@ -71,12 +71,12 @@ class App {
                 new \Twig_SimpleFunction(
                     'form_token',
                     function($lock_to = null) {
-                        if (empty($_SESSION['token'])) {
+                       // if (empty($_SESSION['token'])) {
                             $_SESSION['token'] = bin2hex(random_bytes(32));
-                        }
-                        if (empty($_SESSION['token2'])) {
-                            $_SESSION['token2'] = random_bytes(32);
-                        }
+                        //}
+                        //if (empty($_SESSION['token2'])) {
+                          //  $_SESSION['token2'] = random_bytes(32);
+                        //}
                         //if (empty($lock_to)) {
                             return $_SESSION['token'];
                         //}
