@@ -65,12 +65,23 @@ class App {
                 else return Settings::getConfig()['name'];
             });
 
+            $csrf = 
+                new \Twig_SimpleFunction(
+                    'form_token',
+                    function() {
+                    $_SESSION['token'] = bin2hex(random_bytes(32));
+                    return $_SESSION['token'];
+            }
+                );
+            
 
+            
             self::$twig->addFunction($asset);
             self::$twig->addFunction($excerpt);
             self::$twig->addFunction($url);
             self::$twig->addFunction($title);
             self::$twig->addFunction($pad);
+            self::$twig->addFunction($csrf);
 
             isset($_SESSION['auth']) ? self::$twig->addGlobal('auth', $_SESSION['auth']) : self::$twig->addGlobal('auth', '');
         }

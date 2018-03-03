@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\ProductsModel;
 use \App\System\App;
+use \App\System\Auth;
 use \App\System\FormValidator;
 use \App\System\Settings;
 use \App\Controllers\Controller;
@@ -25,7 +26,7 @@ class CategoriesController extends Controller {
     }
 
     public function add() {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
 
@@ -57,6 +58,7 @@ class CategoriesController extends Controller {
                     ]
                 ]);
             }
+            App::redirect('categories');
         }
 
         else {
@@ -69,7 +71,7 @@ class CategoriesController extends Controller {
     }
 
     public function edit($id) {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
 
@@ -133,7 +135,7 @@ class CategoriesController extends Controller {
         $model2 = new ProductsModel($_COOKIE['user']);
         $products = $model2->getProductsByCategoryId($id);
         
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             foreach($products as $product){
                 $model2->delete($product->id);
             }

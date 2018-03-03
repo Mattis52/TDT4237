@@ -7,6 +7,7 @@ use \App\System\Settings;
 use \App\System\Mailer;
 use \App\Controllers\Controller;
 use \App\Models\ReportsModel;
+use \App\System\Auth;
 use \DateTime;
 
 class ReportsController extends Controller {
@@ -24,7 +25,7 @@ class ReportsController extends Controller {
     }
 
     public function add() {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title     = isset($_POST['title']) ? $_POST['title'] : '';
             $validator = new FormValidator();
             $validator->notEmpty('title', $title, "Your title must not be empty");
@@ -80,7 +81,7 @@ class ReportsController extends Controller {
     }
 
     public function delete($id) {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $model = new ReportsModel();
             $file  = $model->find($id)->file;
             unlink(__DIR__ . '/../../public/uploads/' . $file);

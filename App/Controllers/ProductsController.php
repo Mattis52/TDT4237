@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 use \App\System\App;
+
+use \App\System\Auth;
 use \App\System\ImageUpload;
 use \App\System\Settings;
 use \App\Controllers\Controller;
@@ -76,7 +78,7 @@ class ProductsController extends Controller {
     }
 
     public function add() {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
             $category    = isset($_POST['category']) ? $_POST['category'] : '';
@@ -153,7 +155,7 @@ class ProductsController extends Controller {
     }
 
     public function edit($id) {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
             $category    = isset($_POST['category']) ? $_POST['category'] : '';
@@ -234,7 +236,7 @@ class ProductsController extends Controller {
     }
 
     public function delete($id) {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $model = new ProductsModel();
             $file  = $model->find($id)->media;
             unlink(__DIR__ . '/../../public/uploads/' . $file);
