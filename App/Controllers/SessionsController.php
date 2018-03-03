@@ -52,6 +52,4 @@ class SessionsController extends Controller {
         App::redirect();
     }
 
-
-
 }
