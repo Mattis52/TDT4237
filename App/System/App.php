@@ -91,6 +91,7 @@ class App {
     }
 
     public static function redirect($path = '') {
+        echo "Redirect path: " . $path;
         $location = 'Location: ' . Settings::getConfig()['url'] . $path;
         header($location);
     }

@@ -80,24 +80,31 @@ class ReportsController extends Controller {
     }
 
     public function delete($id) {
-        if(!empty($_POST)) {
-            $model = new ReportsModel();
-            $file  = $model->find($id)->file;
-            unlink(__DIR__ . '/../../public/uploads/' . $file);
-            $model->delete($id);
+        $model = new ReportsModel();
+        $report = $model->find($id);
+        if ($this->isOwner($report)) {
+            if(!empty($_POST)) {
+                $file  = $model->find($id)->file;
+                unlink(__DIR__ . '/../../public/uploads/' . $file);
+                $model->delete($id);
 
-            App::redirect('reports');
+                App::redirect('reports');
+            }
+
+            else {
+                $model = new ReportsModel();
+                $data = $model->find($id);
+                $this->render('pages/reports_delete.twig', [
+                    'title'       => 'Delete report',
+                    'description' => 'Reports - Just a simple inventory management system.',
+                    'page'        => 'reports',
+                    'data'        => $data
+                ]);
+            }
         }
-
         else {
-            $model = new ReportsModel();
-            $data = $model->find($id);
-            $this->render('pages/reports_delete.twig', [
-                'title'       => 'Delete report',
-                'description' => 'Reports - Just a simple inventory management system.',
-                'page'        => 'reports',
-                'data'        => $data
-            ]);
+            echo "You don't own this report, thereby you can't delete it.";
+            App::error403();
         }
     }
 
