@@ -25,7 +25,7 @@ class SessionsController extends Controller {
             if ($locked_out or $refresh) {
               if ($locked_out) {
                 $errors = [
-                  "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds, and the admin is informed."
+                  "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds."
                 ];
               }
               else if (isset($_SESSION['locked_until']) and $_SESSION['locked_until'] < time()) {
@@ -59,18 +59,11 @@ class SessionsController extends Controller {
                   $_SESSION['failed_attempts'] = ++$_SESSION['failed_attempts'];  // Added
                 }
                 if( $_SESSION['failed_attempts'] < 3 and !$refresh) {
-                  array_push($errors, "You have had " . $_SESSION['failed_attempts'] . " failed logins. After 3, your account will be locked for an increasing timeinterval, and the admin will be informed.");
+                  array_push($errors, "You have had " . $_SESSION['failed_attempts'] . " failed logins. After 3, your account will be locked for an increasing timeinterval.");
                 }
                 else if( $_SESSION['failed_attempts'] == 3 and !$refresh) {
-                  // Warn admin
-                  $model = new UsersModel();
-                  $email_addr = $model->getEmail('root'); // Assumes admin is named "root" 
-                  $message = 'Somebody from are trying to log in and have spent ' . $_SESSION['failed_attempts'] . ' attempts.';
-                  // TODO: don't know how to get IP adress or something similar
-                  mail($email_addr, 'To many attempts at login', $message);
-                  // Start time interval
                   $this->increase_session_lockout();
-                  array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds, and the admin is informed.");
+                  array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds.");
                 } 
                 else if ( $_SESSION['failed_attempts'] >3) {
                   // Increase time interval
