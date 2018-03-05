@@ -15,7 +15,7 @@ class CategoriesController extends Controller {
 
     public function all() {
         $model = new CategoriesModel();
-        $data  = $model->all($_COOKIE['user']);
+        $data  = $model->all($_SESSION['auth']); // Changed from COOKIE['user']
 
         $this->render('pages/categories.twig', [
             'title'       => 'Categories',
@@ -40,10 +40,10 @@ class CategoriesController extends Controller {
                     'title'       => $title,
                     'description' => $description,
                     'created_at'  => date('Y-m-d H:i:s'),
-                    'user'        => $_COOKIE['user']
+                    'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
                 ]);
 
-                App::redirect('categories');
+                //App::redirect('categories');
             }
 
             else {
@@ -139,7 +139,7 @@ class CategoriesController extends Controller {
     }
 
     public function delete($id) {
-        $model2 = new ProductsModel($_COOKIE['user']);
+        $model2 = new ProductsModel($_SESSION['auth']); // Changed from COOKIE['user']
         $products = $model2->getProductsByCategoryId($id);
 
         $model = new CategoriesModel(); // Added
@@ -155,7 +155,7 @@ class CategoriesController extends Controller {
                 App::redirect('categories');
             }
             else {
-                $model = new CategoriesModel($_COOKIE['user']);
+                $model = new CategoriesModel($_SESSION['auth']); // Changed from COOKIE['user']
                 $data = $model->find($id);
                 $this->render('pages/categories_delete.twig', [
                     'title'       => 'Delete category',

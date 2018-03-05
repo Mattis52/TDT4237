@@ -11,10 +11,11 @@ use \App\System\Auth;
 class SessionsController extends Controller {
 
     public function login() {
-
-        $_SESSION['failed_attempts'] = 0; // Added, maybe move to where session is created
-        $_SESSION['time_lockout'] = 0;
-        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {            
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
+            if (!isset($_SESSION['locked_until'])) {
+              $_SESSION['locked_until'] = time() -3600;
+            }
+            
             $username = isset($_POST['username']) ? $_POST['username'] : '';
 
             $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
@@ -22,28 +23,23 @@ class SessionsController extends Controller {
             $refresh = $_SESSION['last_password']  === $password;
             $locked_out = $_SESSION['locked_until'] > time();
 
-            if ($locked_out or $refresh) {
-              if ($locked_out) {
-                $errors = [
-                  "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds."
-                ];
-              }
-              else if (isset($_SESSION['locked_until']) and $_SESSION['locked_until'] < time()) {
-                echo "Should lockup now";
-              }
+            if ($locked_out) {
+              $errors = [
+                "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds."
+              ];
             } 
             else { 
               if($this->auth->checkCredentials($username, $password) and !$_SESSION['time_lockout'] = 0) {
                 $_SESSION['failed_attempts'] = 0; // Added
                 session_regenerate_id(); // Added
                 setcookie("user", $username, '/', null, false, 1); // Changed
-                  setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
-                  // TODO: Could maybe also just delete this?
-                  if ($this->userRep->getAdmin($username)){
-                      setcookie("admin", 'yes', '/', null, false, 1); // Changed
-                  }else{
-                      setcookie("admin", 'no', '/', null, false, 1); // Changed
-                  }
+                setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
+                // TODO: Could maybe also just delete this?
+                if ($this->userRep->getAdmin($username)){
+                    setcookie("admin", 'yes', '/', null, false, 1); // Changed
+                }else{
+                    setcookie("admin", 'no', '/', null, false, 1); // Changed
+                }
                 $_SESSION['auth']       = $username;
                 $_SESSION['id']         = $this->userRep->getId($username);
                 $_SESSION['email']      = $this->userRep->getEmail($username);
@@ -52,6 +48,7 @@ class SessionsController extends Controller {
                 App::redirects('dashoard')
               }
               else {
+                echo "Credentials didn't match";
                 $errors = [
                     "Your username and your password don't match."
                 ];

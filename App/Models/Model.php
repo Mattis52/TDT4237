@@ -53,6 +53,9 @@ class Model {
 
         $sql_part = implode(', ', $sql_parts);
 
+        //echo "SQL-parts " . print_r($sql_parts);
+        //echo "Attributes " . print_r($attributes);
+        //echo "Table: " . $this->table;
         App::getDb()->execute("INSERT INTO {$this->table} SET $sql_part", $attributes);
     }
     
