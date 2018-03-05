@@ -18,10 +18,8 @@ class SessionsController extends Controller {
       if (!isset($_SESSION['last_password'])) { // Added
         $_SESSION['last_password'] = ""; // Added
       }
-      
-      if(!empty($_POST)) {
-          
-          
+
+      if(!empty($_POST)) {  
           $username = isset($_POST['username']) ? $_POST['username'] : '';
           //$password = isset($_POST['password']) ? hash('sha1', Settings::getConfig()['salt'] . $_POST['password']) : '';
           $password = isset($_POST['password']) ? $_POST['password'] : '';

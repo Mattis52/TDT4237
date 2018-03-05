@@ -69,7 +69,7 @@ class CategoriesController extends Controller {
     }
 
     public function edit($id) {
-        $model = new CategoriesModel(); // added 
+        $model = new CategoriesModel(); // Added 
         $category = $model->find($id); // Added
         if ($this->isOwner($category)) {
             if(!empty($_POST)) {
