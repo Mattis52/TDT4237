@@ -26,9 +26,9 @@ class FormValidator {
 
     // Changed this one
     public function validPassword($element, $username, $value, $value_verification) {
-        // At least 7 character        
-        if (strlen($value) < 7) {
-            $this->errors[$element] = "The password must be at least 7 characters";
+        // At least 10 character        
+        if (strlen($value) < 10) {
+            $this->errors[$element] = "The password must be at least 10 characters";
         }
         // Include number
         else if (!preg_match('~[0-9]~', $value)) {
@@ -91,12 +91,14 @@ class FormValidator {
     }
 
     public function validImage($element, $value, $message) {
+        $valid_filetypes = array(".jpeg", ".png"); // Added
+        // $file_type = str_split($value)[0]; // Addeed
         if(empty($value)) {
             $this->errors[$element] = $message;
         }
 
         else {
-            if(empty($value['type'])) {
+            if(empty($value['type']) or in_array($value['type'], $valid_filetypes)) { // Changed
                 $this->errors[$element] = $message;
                 return;
             }
