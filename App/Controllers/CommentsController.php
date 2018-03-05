@@ -16,7 +16,7 @@ class CommentsController extends Controller {
                 $model = new CommentsModel;
                 $model->create([
                     'created_at' => date('Y-m-d H:i:s'),
-                    'user'       => $_COOKIE['user'],
+                    'user'       => $_SESSION['auth'], // Changed from COOKIE['user']
                     'text'       => $text
                 ]);
             }

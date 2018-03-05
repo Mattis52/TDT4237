@@ -13,7 +13,7 @@ class ReportsController extends Controller {
 
     public function all() {
         $model = new ReportsModel();
-        $data  = $model->all($_COOKIE['user']);
+        $data  = $model->all($_SESSION['auth']); // Changed from COOKIE['user']
 
         $this->render('pages/reports.twig', [
             'title'       => 'Reports',
