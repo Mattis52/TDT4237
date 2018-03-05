@@ -31,9 +31,7 @@ class Database {
 
     public function query($statement, $one = false) {
         $req  = $this->getPDO()->query($statement);
-        echo "In query";
-        echo "Req in query: " . print_r($req);
-
+        
         if($one) {
             $data = $req->fetch();
         }
@@ -41,16 +39,13 @@ class Database {
         else {
             $data = $req->fetchAll();
         }
-        echo "Data: " . print_r($data);
-
-
+        
         return $data;
     }
 
     public function prepare($statement, $attributes, $one = false) {
-        echo "IN PREPARE";
         $req = $this->getPDO()->prepare($statement);
-        // echo $statement; echo print_r($attributes) ; die;
+        //echo $statement; echo $attributes; die;
         $req->execute($attributes);
 
         if($one) {
@@ -61,26 +56,16 @@ class Database {
             $data = $req->fetchAll();
         }
 
-        //echo "Data: " . print_r($data);
         return $data;
     }
 
     public function execute($statement, $attributes = false) {
-        // echo "statement in execute: " . $statement; die;
-        //echo $statement . "\n";
-        //echo print_r($attributes) . "\n";
         if(!$attributes) {
-            echo "Execute with no attributes";
-
             $this->getPDO()->query($statement);
         }
 
         else {
-            echo "Execute with attributes";
-            //echo "Going into prepare";
             $req = $this->getPDO()->prepare($statement);
-            //echo "After prepare: ". print_r($req);
-            echo "Attributes: " . print_r($attributes); die;
             $req->execute($attributes);
         }
     }

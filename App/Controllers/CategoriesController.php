@@ -43,7 +43,7 @@ class CategoriesController extends Controller {
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
                 ]);
 
-                //App::redirect('categories');
+                App::redirect('categories');
             }
 
             else {

@@ -6,8 +6,7 @@ use \App\System\Router\Router;
 use \App\System\Settings;
 use \App\Models\UsersModel;
 
-ini_set('session.cookie_httponly', 1); // Added
-//ini_set('session.cookie_secure', 1); // Added
+ini_set('session.cookie_httponly', 1); // Added, check if it does anything
 session_start();
 
 
@@ -17,8 +16,9 @@ public function reset_session() {
     $_SESSION['failed_attempts'] = 0;
     $_SESSION['time_lockout'] = 0;
 }
+
+$this->reset_session();
 */
-//$this->reset_session();
 // This is added
 if ($_SESSION['failed_attempts'] == null) {
     $_SESSION['failed_attempts'] = 0;
@@ -37,7 +37,7 @@ if(isset($_SESSION['last_active'])) {
     $expiresAfterSeconds = $expiresAfter * 60;
     if ($secondsInactive >= $expiresAfterSeconds) { // TODO: maybe add something so that this doesn't become a workaround the lockout mechanism when logging in?
         setcookie('user', '', time()-3600, '/', null, false, 1); // Added
-        setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
+        //setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
         setcookie('password', '', time()-3600, '/', null, false, 1); // Added
         session_unset();
         session_destroy();

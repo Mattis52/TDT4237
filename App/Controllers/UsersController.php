@@ -23,13 +23,11 @@ class UsersController extends Controller {
         ]);
     }
 
-
     /*
     This function is used when the administrator adds a user from the administrator dashboard
     */
     public function add() {
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
-
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
             $email                 = isset($_POST['email']) ? $_POST['email'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
@@ -102,7 +100,7 @@ class UsersController extends Controller {
                     'password'   => hash('sha256', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
                     'admin'      => 0,
-                    'email'      => 'test@test.com' // Added because of error when there is no default for email
+                    'email'      => 'test@test.com' // Added because of error when there is no default for email, can maybe be removed after email is implemented
                 ]);
     }
 
@@ -224,7 +222,7 @@ class UsersController extends Controller {
 
     public function logout() {
         setcookie('user', '', time()-3600, '/', null, false, 1); // Added
-        setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
+        //setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
         setcookie('password', '', time()-3600, '/', null, false, 1); // Added
         session_unset(); // Added
         session_destroy();

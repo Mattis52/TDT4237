@@ -11,8 +11,8 @@ class Settings {
     public static function getConfig() {
         if(self::$config === null) {
             $config_file  = Yaml::parse((file_get_contents(dirname(__DIR__) . '/config.yml')));
-            self::$environment = $config_file['environment']; // Commented out
-            //$this->$getDev(); // Added
+            self::$environment = $config_file['environment'];
+            //$this->$getDev(); // Added, not done
             self::$config = $config_file[self::$environment];
             if(!self::$config) throw new Exception("Config file could not be loaded!");
         }

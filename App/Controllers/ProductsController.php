@@ -78,6 +78,7 @@ class ProductsController extends Controller {
     }
 
     public function add() {
+
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
@@ -95,7 +96,6 @@ class ProductsController extends Controller {
             $validator->validImage('media', $media, "You didn't provided a media or it is invalid");
 
             if($validator->isValid()) {
-                echo "The product is valid";
                 $upload    = new ImageUpload();
                 $media_url = $upload->add($media);
 
@@ -111,15 +111,10 @@ class ProductsController extends Controller {
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
                 ]);
 
-                echo "After creating the model";
-                $models = $model->all();
-                echo print_r($models);
-
-                //App::redirect('products');
+                App::redirect('products');
             }
 
             else {
-                echo "The product is not valid";
                 $model = new CategoriesModel();
                 $categories  = $model->all($_SESSION['auth']); // Changed from COOKIE['user']
                 $this->render('pages/products_add.twig', [
