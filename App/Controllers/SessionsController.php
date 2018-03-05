@@ -35,13 +35,13 @@ class SessionsController extends Controller {
               if($this->auth->checkCredentials($username, $password)) {
                   $_SESSION['failed_attempts'] = 0; // Added
                   session_regenerate_id(); // Added
-                  setcookie("user", $username);
-                  setcookie("password",  $_POST['password']);
+                  setcookie("user", $username, '/', null, false, 1); // Changed
+                  setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
                   // TODO: Could maybe also just delete this?
                   if ($this->userRep->getAdmin($username)){
-                      setcookie("admin", 'yes');
+                      setcookie("admin", 'yes', '/', null, false, 1); // Changed
                   }else{
-                      setcookie("admin", 'no');
+                      setcookie("admin", 'no', '/', null, false, 1); // Changed
                   }
                   $_SESSION['auth']       = $username;
                   $_SESSION['id']         = $this->userRep->getId($username);
@@ -88,7 +88,7 @@ class SessionsController extends Controller {
     public function logout() { // TODO: is this every used?
       echo "Calling logout in SessionsController";
         session_destroy(); // Added
-        setcookie('user', '', time()-3600); // Added
+        setcookie('user', '', time()-3600, '/', null, false, 1); // Added
         App::redirect();
     }
     

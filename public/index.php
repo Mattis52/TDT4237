@@ -7,9 +7,8 @@ use \App\System\Settings;
 use \App\Models\UsersModel;
 
 ini_set('session.cookie_httponly', 1); // Added
-//ini_set('session.cookie_secure', 1); // Added 
+//ini_set('session.cookie_secure', 1); // Added
 session_start();
-//session.setMaxInactiveInterval(1);
 
 
 // Just during testing
@@ -37,9 +36,9 @@ if(isset($_SESSION['last_active'])) {
     $secondsInactive = time() - $_SESSION['last_active'];
     $expiresAfterSeconds = $expiresAfter * 60;
     if ($secondsInactive >= $expiresAfterSeconds) { // TODO: maybe add something so that this doesn't become a workaround the lockout mechanism when logging in?
-        setcookie('user', '', time()-3600); // Added
-        setcookie('admin', '', time()-3600); // Added
-        setcookie('password', '', time()-3600); // Added
+        setcookie('user', '', time()-3600, '/', null, false, 1); // Added
+        setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
+        setcookie('password', '', time()-3600, '/', null, false, 1); // Added
         session_unset();
         session_destroy();
         App::redirect();
