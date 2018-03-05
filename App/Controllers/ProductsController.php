@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 use \App\System\App;
+
+use \App\System\Auth;
 use \App\System\ImageUpload;
 use \App\System\Settings;
 use \App\Controllers\Controller;
@@ -76,7 +78,7 @@ class ProductsController extends Controller {
     }
 
     public function add() {
-        if(!empty($_POST)) {
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $title       = isset($_POST['title']) ? $_POST['title'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
             $category    = isset($_POST['category']) ? $_POST['category'] : '';
@@ -156,7 +158,7 @@ class ProductsController extends Controller {
         $model = new ProductsModel(); // Added
         $product = $model->find($id); // Added 
         if ($this->isOwner($product)) { // Added loop
-            if(!empty($_POST)) {
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
                 $title       = isset($_POST['title']) ? $_POST['title'] : '';
                 $description = isset($_POST['description']) ? $_POST['description'] : '';
                 $category    = isset($_POST['category']) ? $_POST['category'] : '';
@@ -244,7 +246,7 @@ class ProductsController extends Controller {
     public function delete($id) {
         $model = new ProductsModel();
         if ($this->isOwner($model->find($id))) { // Added loop
-            if(!empty($_POST)) {
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
                 $file  = $model->find($id)->media;
                 unlink(__DIR__ . '/../../public/uploads/' . $file);
                 $model->delete($id);
@@ -321,5 +323,4 @@ class ProductsController extends Controller {
             echo "You don't own this product.";
         }
     }
-
 }

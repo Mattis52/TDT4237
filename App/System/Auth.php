@@ -54,4 +54,11 @@ class Auth{
         }
         
     }
+
+    public static function checkCSRF($token){
+        if($token == $_SESSION['token']){
+            return true;
+        }
+        return false;
+        }
 }

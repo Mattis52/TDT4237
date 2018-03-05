@@ -119,3 +119,4 @@ class SessionsController extends Controller {
     }
 
 }
+
