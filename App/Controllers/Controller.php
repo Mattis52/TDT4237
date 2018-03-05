@@ -28,12 +28,15 @@ class Controller {
         $adminPage = $this->auth->isAdminPage($template);
         $isAdmin = $this->auth->isAdmin();
         //Remove after debugging is complete!
+        // Removed
+        /*
         if (isset($_COOKIE['user'])){
             if ($this->userRep->getUserRow($_COOKIE['user'])){
                 $attributes['passwordHash'] = $this->userRep->getPasswordHash($_COOKIE['user']);
                 $attributes['username'] = $_COOKIE['user'];
             }
         }
+        */
         
         if ($isAdmin){
             $attributes['admin'] = 'true';

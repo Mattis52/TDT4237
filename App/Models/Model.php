@@ -10,7 +10,7 @@ class Model {
     
     
     public function __construct(){
-        if (isset ($_COOKIE['user'])){ $this->username = $_COOKIE['user'];}
+        if (isset ($_SESSION['auth'])){ $this->username = $_SESSION['auth'];} // Changed from COOKIE['user']
     }
 
     public function all($user = null) {

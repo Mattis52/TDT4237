@@ -39,7 +39,7 @@ class Auth{
     }
 
     public function isLoggedIn(){
-        if (isset($_COOKIE['user'])){
+        if (isset($_SESSION['auth'])){ // Changed from COOKIE['user']
             return true;
         }
     }
