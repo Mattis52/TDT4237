@@ -223,9 +223,9 @@ class UsersController extends Controller {
     }
 
     public function logout() {
-        setcookie('user', '', time()-3600); // Added
-        setcookie('admin', '', time()-3600); // Added
-        setcookie('password', '', time()-3600); // Added
+        setcookie('user', '', time()-3600, '/', null, false, 1); // Added
+        setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
+        setcookie('password', '', time()-3600, '/', null, false, 1); // Added
         session_unset(); // Added
         session_destroy();
         App::redirect();
