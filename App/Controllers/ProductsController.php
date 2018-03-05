@@ -132,7 +132,6 @@ class ProductsController extends Controller {
 
         else {
             $model = new CategoriesModel();
-
             $categories  = $model->all($_SESSION['auth']); // Changed from COOKIE['user']
             
             if ($categories){
@@ -236,7 +235,7 @@ class ProductsController extends Controller {
                 ]);
             }
         }
-        else {
+        else { // Added
             echo "You don't own this product, and thereby you can't edit it.";
             App::error403();
         }
@@ -244,7 +243,7 @@ class ProductsController extends Controller {
 
     public function delete($id) {
         $model = new ProductsModel();
-        if ($this->isOwner($model->find($id))) {
+        if ($this->isOwner($model->find($id))) { // Added loop
             if(!empty($_POST)) {
                 $file  = $model->find($id)->media;
                 unlink(__DIR__ . '/../../public/uploads/' . $file);
@@ -264,8 +263,7 @@ class ProductsController extends Controller {
                 ]);
             }
         } 
-
-        else {
+        else { // Added
             echo "You don't own this product, and thereby can't delete it.";
             App::error403();
         }

@@ -80,9 +80,9 @@ class ReportsController extends Controller {
     }
 
     public function delete($id) {
-        $model = new ReportsModel();
-        $report = $model->find($id);
-        if ($this->isOwner($report)) {
+        $model = new ReportsModel(); // Added
+        $report = $model->find($id); // Added
+        if ($this->isOwner($report)) { // Added loop
             if(!empty($_POST)) {
                 $file  = $model->find($id)->file;
                 unlink(__DIR__ . '/../../public/uploads/' . $file);
@@ -102,7 +102,7 @@ class ReportsController extends Controller {
                 ]);
             }
         }
-        else {
+        else { // Added
             echo "You don't own this report, thereby you can't delete it.";
             App::error403();
         }

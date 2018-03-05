@@ -10,11 +10,11 @@ use \App\System\Auth;
 
 class SessionsController extends Controller {
 
+    // Most of the code here is changed (everything related to locking of account and numbers of tries)
     public function login() {
-
         if(!empty($_POST)) {
-            if (!isset($_SESSION['locked_until'])) {
-              $_SESSION['locked_until'] = time() -3600;
+            if (!isset($_SESSION['locked_until'])) { // Added
+              $_SESSION['locked_until'] = time() -3600; // Added
             }
             
             $username = isset($_POST['username']) ? $_POST['username'] : '';
@@ -24,7 +24,7 @@ class SessionsController extends Controller {
             $refresh = $_SESSION['last_password']  === $password;
             $locked_out = $_SESSION['locked_until'] > time();
 
-            if ($refresh) {
+            if ($refresh) { // Added
               if ($locked_out) {
                 $errors = [
                   "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds."
