@@ -37,10 +37,11 @@ class Controller {
             }
         }
         */
-        
+
         if ($isAdmin){
             $attributes['admin'] = 'true';
         }
+
         
         if ($adminPage && !($isAdmin)){
             App::error403();
