@@ -50,7 +50,6 @@ class Controller {
     public function isOwner($object) {
         $owner = $object->user;
         if ($owner === $_SESSION['auth']) {
-            //echo var_dump($object); // TODO: check that sql code is shown when it is supposed to
             return true;
         }
         else {
