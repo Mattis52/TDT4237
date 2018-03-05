@@ -37,11 +37,6 @@ class FormValidator {
         // Include Uppercase
         else if (!preg_match('~[A-Z]~', $value)) {
             $this->errors[$element] = "The password must contain at least one character in uppercase";
-          //Not a dictionary word
-        // } else if () {
-
-          // Numbers and letters are not in sequence
-        //} else if () {
         } 
         // Doesn't contain username
         else if (preg_match('/' . $username . '/', $value)) {
@@ -50,7 +45,6 @@ class FormValidator {
         else if (empty($value) || ($value != $value_verification)) {
             $this->errors[$element] = "You didn't write the same password twice";
         }
-        // echo "At the end: " . json_encode($this->errors);
     }
 
     public function validUsername($element, $value, $message) {
@@ -91,14 +85,13 @@ class FormValidator {
     }
 
     public function validImage($element, $value, $message) {
-        $valid_filetypes = array(".jpeg", ".jpg", ".png"); // Added
-        // $file_type = str_split($value)[0]; // Addeed
+        $valid_filetypes = array("image/jpeg", "image/png"); // Added
         if(empty($value)) {
             $this->errors[$element] = $message;
         }
 
         else {
-            if(empty($value['type']) or in_array($value['type'], $valid_filetypes)) { // Changed
+            if(empty($value['type']) or !in_array($value['type'], $valid_filetypes)) { // Changed
                 $this->errors[$element] = $message;
                 return;
             }
