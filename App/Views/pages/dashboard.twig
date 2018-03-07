@@ -117,6 +117,7 @@
         			   <div class="form-control">
             				<label for="username">Submit a comment to the shoutbox</label>
             				<input type="text" name="comment" id="comment" placeholder="Your comment">
+                            <input type="hidden" name="token" value="{{ form_token() }}" />
         			   </div>
         			   <div class="form-control">
             				<input type="submit">

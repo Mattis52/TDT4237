@@ -25,6 +25,7 @@
                     <div class="form-control">
                         <label for="email">Email</label>
                         <input type="email" name="email" placeholder="Your email" id="email" class="{{ errors.email ? 'errors-border' : '' }}" value="{{ data.email ? data.email : '' }}">
+                        <input type="hidden" name="token" value="{{ form_token() }}" />
                     </div>
                 </div>
             </div>

@@ -19,6 +19,7 @@
         <div class="form-control">
             <label for="username">Username</label>
             <input type="text" name="username" id="username" placeholder="Your username">
+            <input type="hidden" name="token" value="{{ form_token() }}" />
         </div>
 
         <div class="form-control">

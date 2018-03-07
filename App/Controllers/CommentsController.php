@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+
+use \App\System\Auth;
 use App\Models\CommentsModel;
 use \App\Controllers\Controller;
 use \DateTime;
@@ -11,7 +13,7 @@ class CommentsController extends Controller {
     protected $table = "comments";
 
     public function add() {
-        if(!empty($_POST)){
+        if(!empty($_POST) && Auth::checkCSRF($_POST["token"]) ){
                 $text  = isset($_POST['comment']) ? $_POST['comment'] : '';
                 $model = new CommentsModel;
                 $model->create([
