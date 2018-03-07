@@ -73,38 +73,38 @@ class UsersController extends Controller {
             ]);
         }
     }
-    
-    public function registrationIsValid($validator, $username, $password, $password_verification): bool { 
-        
+
+    public function registrationIsValid($validator, $username, $password, $password_verification): bool {
+
             if ($validator->notEmpty('username',$username, "Your username can't be empty")){
                 $validator->validUsername('username2', $username, "Your username is not valid (no spaces, uppercase, special character)");
             }
-           
+
             $validator->availableUsername('username', $username, "Your username is not available");
-            
+
             if ($validator->notEmpty('password',$password, "Your password can't be empty")){
                 $validator->validPassword('password2', $password, $password_verification, "You didn't write the same password twice");
             }
-            
+
             if($validator->isValid()) {
                 return true;
             }else{
                 return false;
             }
     }
-    
+
     public function createNewUser($username, $password, $password_verification){
         $model = new UsersModel();
-        
+
                 $model->create([
                     'username'   => $username,
-                    'password'   => hash('sha1', Settings::getConfig()['salt'] . $password),
+                    'password'   => hash('sha256', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
                     'admin'      => 0
                 ]);
     }
-    
-    
+
+
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
         $validator = New FormValidator;
@@ -114,9 +114,9 @@ class UsersController extends Controller {
             $password_verification = isset($_POST['password_verification']) ? $_POST['password_verification'] : '';
 
             if($this->registrationIsValid($validator, $username, $password, $password_verification)) {
-                
+
                 $this->createNewUser($username, $password, $password_verification);
-                
+
                 $this->render('pages/registration.twig', [
                 'title'       => 'Registrate',
                 'description' => 'Registrate a new user',
@@ -215,7 +215,7 @@ class UsersController extends Controller {
             ]);
         }
     }
-    
+
     public function viewSQL($id) {
         echo var_dump($this->userRep->find($id)); die;
     }
