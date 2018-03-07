@@ -11,15 +11,13 @@ class Auth{
         $this->userRep = new UsersModel;
     }
 
-    public function checkCredentials($username, $password)
+    public function checkCredentials($username, $passwordHash)
     {
         $user = $this->userRep->getUserRow($username);
 
         if ($user === false) {
             return false;
         }
-
-        $passwordHash = hash('sha256', Settings::getConfig()['salt'] . $password);
 
         if ($passwordHash === $this->userRep->getPasswordhash($username)){
             return true;
