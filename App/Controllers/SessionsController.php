@@ -100,7 +100,7 @@ class SessionsController extends Controller {
     // Added
     private function calculate_time() {
       $attempts = $_SESSION['failed_attempts'] - 3;
-      $time = 60;
+      $time = 10;
       for ($x = 1; $x <= $attempts; $x++) {
         $time = $time * 2;
       }
@@ -110,8 +110,8 @@ class SessionsController extends Controller {
     private function increase_session_lockout() {
       $new_time = 0;
       if ($_SESSION['failed_attempts'] == 3) {
-        $new_time = 60;
-        $_SESSION['time_lockout_sec'] = 60;
+        $new_time = 10;
+        $_SESSION['time_lockout_sec'] = 10;
       } else {
         $new_time = $this->calculate_time();
       }
