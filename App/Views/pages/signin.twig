@@ -3,34 +3,39 @@
 {% block content %}
 
 <div class="signin-form">
-    <form action="#" method="post" class="form">
-        <div class="form-title">
-            <h1>Sign in to your account</h1>
-        </div>
+    {% if time_lockout_sec > 0 %}
+      <p> You have failed the login to many times, and can't login at the moment. You have to wait {{ time_lockout_sec }} seconds before next attempt. </p>
 
-        {% if errors %}
-        <div class="form-flash">
-            {% for error in errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
+    {% else %}
+      <form action="#" method="post" class="form">
+          <div class="form-title">
+              <h1>Sign in to your account</h1>
+          </div>
 
-        <div class="form-control">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" placeholder="Your username">
-            <input type="hidden" name="token" value="{{ form_token() }}" />
-        </div>
+          {% if errors %}
+          <div class="form-flash">
+              {% for error in errors %}
+                  <p>{{ error }}</p>
+              {% endfor %}
+          </div>
+          {% endif %}
 
-        <div class="form-control">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="Your password">
-        </div>
+          <div class="form-control">
+              <label for="username">Username</label>
+              <input type="text" name="username" id="username" placeholder="Your username" value="">
+          </div>
 
-        <div class="form-control">
-            <input type="submit" name="submit" value="Sign in">
-        </div>
-    </form>
+          <div class="form-control">
+              <label for="password">Password</label>
+              <input type="password" name="password" id="password" placeholder="Your password" value="">
+          </div>
+
+          <div class="form-control">
+         <input type="hidden" name="token" value="{{ form_token() }}" />
+              <input type="submit" name="submit" value="Sign in">
+          </div>
+      </form>
+    {% endif %}
     <p>Don't have a user? Click <a href="registration">here</a> to register.</p>
 </div>
 
