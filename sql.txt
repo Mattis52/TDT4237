@@ -103,13 +103,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL,
   `email` varchar(255),
   `created_at` varchar(255) NOT NULL,
-  `admin` boolean NOT NULL
+  `admin` boolean NOT NULL,
+  'active' boolean NOT NULL DEFAULT 0
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `created_at`, `admin`) VALUES
-(1, 'root', '8eec77dc748b7d0702119badc92a0c7293be0749', 'root@root.com', '2017-03-08 22:07:32', 1),
-(2, 'user1', '78fd74089ed247b6ee26a13d51f2c2a09b5c659d', 'user1@example.com', '2017-03-08 23:07:32', 0);
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `created_at`, `admin`, 'active') VALUES
+(1, 'root', '8eec77dc748b7d0702119badc92a0c7293be0749', 'root@root.com', '2017-03-08 22:07:32', 1, 1),
+(2, 'user1', '78fd74089ed247b6ee26a13d51f2c2a09b5c659d', 'user1@example.com', '2017-03-08 23:07:32', 0, 1);
 
 
 

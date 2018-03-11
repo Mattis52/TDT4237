@@ -18,12 +18,12 @@ class SessionsController extends Controller {
       if (!isset($_SESSION['last_password'])) { // Added
         $_SESSION['last_password'] = ""; // Added
       }
-      
+
       if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) { // Added
           $username = isset($_POST['username']) ? $_POST['username'] : '';
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
-          
+
           $refresh = $_SESSION['last_password']  === $password;
           $locked_out = $_SESSION['locked_until'] > time();
 
@@ -38,8 +38,8 @@ class SessionsController extends Controller {
           if($this->auth->checkCredentials($username, $password)) {
               $_SESSION['failed_attempts'] = 0; // Added
               session_regenerate_id(); // Added
-              setcookie("user", $username, '/', null, false, 1); // Changed
-              setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
+              //setcookie("user", $username, '/', null, false, 1); // Changed
+              //setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
               // Have removed this
               /*
               if ($this->userRep->getAdmin($username)){
@@ -54,7 +54,7 @@ class SessionsController extends Controller {
               $_SESSION['password']   = $password;
 
               App::redirect('dashboard');
-          } 
+          }
           else {
             $errors = [
                 "Your username and your password don't match."
@@ -68,7 +68,7 @@ class SessionsController extends Controller {
             else if( $_SESSION['failed_attempts'] == 3 and !$refresh) {
               $this->increase_session_lockout();
               array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds.");
-            } 
+            }
             else if ( $_SESSION['failed_attempts'] >3) {
               // Increase time interval
               $this->increase_session_lockout();
@@ -96,7 +96,7 @@ class SessionsController extends Controller {
       setcookie('user', '', time()-3600, '/', null, false, 1); // Added
       App::redirect();
     }
-    
+
     // Added
     private function calculate_time() {
       $attempts = $_SESSION['failed_attempts'] - 3;
