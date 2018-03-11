@@ -23,7 +23,6 @@ class UsersController extends Controller {
         ]);
     }
 
-
     /*
     This function is used when the administrator adds a user from the administrator dashboard
     */
@@ -38,7 +37,7 @@ class UsersController extends Controller {
             $validator->validUsername('username', $username, "Your username is not valid (no spaces, uppercase, special character)");
             $validator->availableUsername('username', $username, "Your username is not available");
             $validator->validEmail('email', $email, "Your email is not valid");
-            $validator->validPassword('password', $password, $password_verification, "You didn't write the same password twice");
+            $validator->validPassword('password', $username, $password, $password_verification); // Changed, by removing the message
 
             if($validator->isValid()) {
                 $model = new UsersModel();
@@ -73,38 +72,39 @@ class UsersController extends Controller {
             ]);
         }
     }
-    
-    public function registrationIsValid($validator, $username, $password, $password_verification): bool { 
-        
+
+    public function registrationIsValid($validator, $username, $password, $password_verification): bool {
+
             if ($validator->notEmpty('username',$username, "Your username can't be empty")){
                 $validator->validUsername('username2', $username, "Your username is not valid (no spaces, uppercase, special character)");
             }
-           
+
             $validator->availableUsername('username', $username, "Your username is not available");
-            
+
             if ($validator->notEmpty('password',$password, "Your password can't be empty")){
-                $validator->validPassword('password2', $password, $password_verification, "You didn't write the same password twice");
+                $validator->validPassword('password2', $username, $password, $password_verification); // Changed, added so it sends username too
             }
-            
+
             if($validator->isValid()) {
                 return true;
             }else{
                 return false;
             }
     }
-    
+
     public function createNewUser($username, $password, $password_verification){
         $model = new UsersModel();
-        
+
                 $model->create([
                     'username'   => $username,
-                    'password'   => hash('sha1', Settings::getConfig()['salt'] . $password),
+                    'password'   => hash('sha256', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
-                    'admin'      => 0
+                    'admin'      => 0,
+                    'email'      => 'test@test.com' // Added because of error when there is no default for email, can maybe be removed after email is implemented
                 ]);
     }
-    
-    
+
+
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
         $validator = New FormValidator;
@@ -114,9 +114,9 @@ class UsersController extends Controller {
             $password_verification = isset($_POST['password_verification']) ? $_POST['password_verification'] : '';
 
             if($this->registrationIsValid($validator, $username, $password, $password_verification)) {
-                
+
                 $this->createNewUser($username, $password, $password_verification);
-                
+
                 $this->render('pages/registration.twig', [
                 'title'       => 'Registrate',
                 'description' => 'Registrate a new user',
@@ -215,12 +215,16 @@ class UsersController extends Controller {
             ]);
         }
     }
-    
+
     public function viewSQL($id) {
         echo var_dump($this->userRep->find($id)); die;
     }
 
     public function logout() {
+        setcookie('user', '', time()-3600, '/', null, false, 1); // Added
+        //setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
+        setcookie('password', '', time()-3600, '/', null, false, 1); // Added
+        session_unset(); // Added
         session_destroy();
         App::redirect();
     }
