@@ -133,8 +133,7 @@ class CategoriesController extends Controller {
             }
         }
         else { // Added
-            echo "You don't own this category, and thereby you can't edit it.";
-            App::error403();
+            App::error404();
         }
     }
 
@@ -167,8 +166,7 @@ class CategoriesController extends Controller {
             }
         }
         else { // Added 
-            echo "You don't own this category, and thereby can't delete it.";
-            App::error403();
+            App::error404();
         }
     }
 

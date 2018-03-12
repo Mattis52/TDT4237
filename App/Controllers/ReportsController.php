@@ -104,8 +104,7 @@ class ReportsController extends Controller {
             }
         }
         else { // Added
-            echo "You don't own this report, thereby you can't delete it.";
-            App::error403();
+            App::error404();
         }
     }
 
