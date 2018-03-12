@@ -20,7 +20,7 @@ dev:
         host: 'smtp.gmail.com'
         username: 'tdt4237mailer@gmail.com'
         password: 'YF96YtnqvoPt'
-        port: '465'
+        port: '587'
 
 prod:
     name: 'Pokedex'

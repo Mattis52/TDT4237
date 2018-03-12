@@ -109,11 +109,12 @@ class UsersController extends Controller {
                     'active_hash'=> md5(rand(0,1000))
 
                 ]);
+        new Mailer($username); //sends verification email
     }
 
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
-        $mail=new Mailer;
+
         $validator = New FormValidator;
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username              = isset($_POST['username']) ? $_POST['username'] : '';

@@ -24,6 +24,8 @@ class SessionsController extends Controller {
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
 
+          //add
+
           $refresh = $_SESSION['last_password']  === $password;
           $locked_out = $_SESSION['locked_until'] > time();
 
