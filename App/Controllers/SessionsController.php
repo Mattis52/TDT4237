@@ -20,10 +20,10 @@ class SessionsController extends Controller {
           $username = isset($_POST['username']) ? $_POST['username'] : '';
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
-
-          $last_password = $_SESSION['last_password'];
+          
+          $last_password = isset($_SESSION['last_password']) ? $_SESSION['last_password'] : '';
           $this_password = $_POST['password'];
-
+          
           $refresh = $this->is_refresh($last_password, $this_password);
           $locked_out = $this->is_locked_out($ip);
 
