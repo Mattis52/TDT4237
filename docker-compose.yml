@@ -1,0 +1,36 @@
+# docker-compose exec mysql bash
+# cat app/sql.txt | mysql -uroot -p --host=0.0.0.0 --port=3306
+# (enter barePassord)
+# exit
+
+
+version: '2'
+services:
+  webapp:
+    build: .
+    image: tdt4237-public
+    expose:
+      - "8080"
+      - "443"
+    ports:
+      - "8080:80"
+      - "443:443"
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - tdt4237
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 'barePassord'
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - .:/app
+    networks:
+      - tdt4237
+networks:
+  tdt4237:
