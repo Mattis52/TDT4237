@@ -104,6 +104,7 @@ class SessionsController extends Controller {
       }
       return $time;
     }
+    
     // Added
     private function increase_session_lockout() {
       $new_time = 0;
