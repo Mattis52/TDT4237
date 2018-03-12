@@ -239,8 +239,7 @@ class ProductsController extends Controller {
             }
         }
         else { // Added
-            echo "You don't own this product, and thereby you can't edit it.";
-            App::error403();
+            App::error404();
         }
     }
 
@@ -268,8 +267,7 @@ class ProductsController extends Controller {
             }
         } 
         else { // Added
-            echo "You don't own this product, and thereby can't delete it.";
-            App::error403();
+            App::error404();
         }
     }
 
@@ -321,8 +319,7 @@ class ProductsController extends Controller {
             echo var_dump($this->productRep->find($id)); die;
         } 
         else { // Added
-            App::error403();
-            echo "You don't own this product.";
+            App::error404();
         }
     }
 

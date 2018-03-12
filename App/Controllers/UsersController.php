@@ -217,7 +217,13 @@ class UsersController extends Controller {
     }
 
     public function viewSQL($id) {
-        echo var_dump($this->userRep->find($id)); die;
+        $logged_in_username = $_SESSION['auth']; // Added
+        $is_admin = $this->userRep->getAdmin($logged_in_username); // Added
+        if ($is_admin === '1') { //A Added
+            echo var_dump($this->userRep->find($id)); die;
+        } else {
+            App::error404(); // Added
+        }
     }
 
     public function logout() {
