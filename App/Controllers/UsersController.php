@@ -222,8 +222,7 @@ class UsersController extends Controller {
         if ($is_admin === '1'){ // Changed
             echo var_dump($this->userRep->find($id)); die;
         } else { // Added
-            echo "You can't see this."; // Added
-            App::error403(); // Added
+            App::error404(); // Added
         }
     }
 

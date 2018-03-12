@@ -12,31 +12,29 @@ class SessionsController extends Controller {
 
     // Most of the code here is changed (everything related to locking of account and numbers of tries)
     public function login() {
-      if (!isset($_SESSION['locked_until'])) { // Added
-        $_SESSION['locked_until'] = time() -3600; // Added
-      }
-      if (!isset($_SESSION['last_password'])) { // Added
-        $_SESSION['last_password'] = ""; // Added
-      }
+
+      $ip = $_SERVER['REMOTE_ADDR'];
+      $this->create_row_if_not_exists($ip);
       
       if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) { // Added
           $username = isset($_POST['username']) ? $_POST['username'] : '';
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
           
-          $refresh = $_SESSION['last_password']  === $password;
-          $locked_out = $_SESSION['locked_until'] > time();
+          $last_password = isset($_SESSION['last_password']) ? $_SESSION['last_password'] : '';
+          $this_password = $_POST['password'];
+          
+          $refresh = $this->is_refresh($last_password, $this_password);
+          $locked_out = $this->is_locked_out($ip);
 
-        if ($refresh) { // Added
-          if ($locked_out) {
-            $errors = [
-              "You have had " . $_SESSION['failed_attempts'] . " failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds."
-            ];
-          }
+        if ($locked_out) {
+          $errors = [
+            "You have had " . $this->get_existing_attempts($ip) . " failed logins. Your account is now locked for " . $this->get_locked_sec($ip) . " seconds."
+          ];
         }
         else {
           if($this->auth->checkCredentials($username, $password)) {
-              $_SESSION['failed_attempts'] = 0; // Added
+              $this->reset_failed_attempts($ip); // Added
               session_regenerate_id(); // Added
               //setcookie("user", $username, '/', null, false, true); // Changed
               //setcookie("password",  $_POST['password'], '/', null, false, true); // Changed 
@@ -60,32 +58,27 @@ class SessionsController extends Controller {
                 "Your username and your password don't match."
             ];
             if (!$refresh) {
-              $_SESSION['failed_attempts'] = ++$_SESSION['failed_attempts'];  // Added
+              $this->register_failed_attempt($ip); // Added
             }
-            if( $_SESSION['failed_attempts'] < 3 and !$refresh) {
-              array_push($errors, "You have had " . $_SESSION['failed_attempts'] . " failed logins. After 3, your account will be locked for an increasing timeinterval.");
+            if( $this->get_existing_attempts($ip) < 3 and !$refresh) {
+              array_push($errors, "You have had " . $this->get_existing_attempts($ip) . " failed logins. After 3, your account will be locked for an increasing timeinterval.");
             }
-            else if( $_SESSION['failed_attempts'] == 3 and !$refresh) {
+            else if( $this->get_existing_attempts($ip) === 3 and !$refresh) {
               $this->increase_session_lockout();
-              array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $_SESSION['time_lockout_sec'] . " seconds.");
+              array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $this->get_locked_sec($ip) . " seconds.");
             } 
-            else if ( $_SESSION['failed_attempts'] >3) {
-              // Increase time interval
-              $this->increase_session_lockout();
-                            }
+            
           }
+          
           $_SESSION['last_password'] = $_POST['password'];
         }
       }
-
-      // Update sec left showed to user
-      $_SESSION['time_lockout_sec'] = $_SESSION['locked_until'] - time();
 
       $this->render('pages/signin.twig', [
           'title'       => 'Sign in',
           'description' => 'Sign in to the dashboard',
           'errors'      => isset($errors) ? $errors : '',
-          'time_lockout_sec' => $_SESSION['time_lockout_sec'],
+          'time_lockout_sec' => $this->get_locked_sec($ip),
       ]);
     }
 
@@ -94,25 +87,113 @@ class SessionsController extends Controller {
       setcookie('user', '', time()-3600, '/', null, false, 1); // Added
       App::redirect();
     }
+
+    // Added
+    public function is_refresh($last_password, $this_password) {
+      $refresh = strcmp($last_password, $this_password);
+
+      if ($refresh == 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // Added
+    public function is_locked_out($ip) {
+      $locked_until = $this->get_locked_until($ip);
+
+      if ($locked_until > time()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
     
     // Added
-    private function calculate_time() {
-      $attempts = $_SESSION['failed_attempts'] - 3;
+    private function calculate_time($failed_attempts) {
+      $attempts = $failed_attempts - 3;
       $time = 10;
       for ($x = 1; $x <= $attempts; $x++) {
         $time = $time * 2;
       }
       return $time;
     }
+  
     // Added
-    private function increase_session_lockout() {
-      $new_time = 0;
-      if ($_SESSION['failed_attempts'] == 3) {
-        $new_time = 10;
-        $_SESSION['time_lockout_sec'] = 10;
+    private function register_failed_attempt($ip) {
+      $this->create_row_if_not_exists($ip);
+
+      $existing_attempts = $this->get_existing_attempts($ip);
+      $failed_attempts = $existing_attempts + 1;
+
+      $query = "";
+      if ($failed_attempts >= 3) {
+        $new_time_sec = $this->calculate_time($failed_attempts);
+        $new_locked_until = time() + $new_time_sec;
+
+        $locked_until_timestamp = date('Y-m-d H:i:s', $new_locked_until);
+
+        $query = "UPDATE lockout SET failed_attempts=$failed_attempts, locked_until='$locked_until_timestamp' WHERE ip='{$ip}'";
       } else {
-        $new_time = $this->calculate_time();
+        $query = "UPDATE lockout SET failed_attempts=$failed_attempts WHERE ip='{$ip}'";
       }
-      $_SESSION['locked_until'] = time() + $new_time;
+      
+      App::getDb()->execute($query);
     }
+
+    // Added
+    private function get_existing_attempts($ip) {
+      $query = "SELECT failed_attempts FROM lockout WHERE ip = '{$ip}'";
+
+      $res = App::getDb()->query($query, true);
+      $failed_attempts = $res->failed_attempts;
+
+      return $failed_attempts;
+    }
+
+    // Added
+    private function get_locked_until($ip) {    
+      $query = "SELECT locked_until FROM lockout WHERE ip = '{$ip}'";
+
+      $res = App::getDb()->query($query, true);
+      $date = $res->locked_until;
+
+      return strtotime($date);
+    }
+
+    // Added
+    private function get_locked_sec($ip) {
+      $locked_until = $this->get_locked_until($ip);
+
+      $difference = $locked_until - time();
+      return $difference;
+    }
+
+    // Added
+    private function reset_failed_attempts($ip) {
+      $query = "UPDATE lockout SET failed_attempts=0 WHERE ip= '{$ip}'";
+
+      App::getDb()->execute($query);
+    }
+
+    // Added
+    private function create_row_if_not_exists($ip) {
+      $query = "SELECT * FROM lockout WHERE ip = '{$ip}'";
+  
+      $result = App::getDb()->query($query, true);
+      if ($result == "" ) {
+        $this->create_lockout_row($ip);
+      }
+    }
+
+    // Added
+    private function create_lockout_row($ip) {
+      $locked_until = date('Y-m-d H:i:s', time() - 3600);
+
+      $query = "INSERT IGNORE INTO lockout (ip, failed_attempts, locked_until) VALUES ('{$ip}', ". 0 . ", '{$locked_until}')";
+
+      App::getDb()->execute($query, false);
+    }
+
 }

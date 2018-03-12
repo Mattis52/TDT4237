@@ -7,7 +7,6 @@ use \App\System\Settings;
 use \App\Models\UsersModel;
 use \App\System\Auth;
 
-ini_set('session.cookie_httponly', 1); // Added, check if it does anything
 session_start();
 
 
