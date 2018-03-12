@@ -64,5 +64,43 @@ xhttp.onreadystatechange = function (e) {
     }
 };
 
+let comments = document.getElementsByClassName("product-text")
+function ValidURL(str) {
+    var pattern = new RegExp("https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,}");
+    return pattern.test(str);
+  }
+
+  function urlify(comment){
+        
+    var text = comment.children[0].innerHTML;
+    if(ValidURL(text)){
+        comment.children[0].innerHTML = '<a href="">'+text+'</a>';
+        comment.children[0].addEventListener("click",function(event){
+            event.preventDefault();
+            redirecter(event.target.innerHTML)
+        });
+    }
+      
+}
+
+function redirecter(url){
+    if(confirm("are you sure you want to leave this site?")){
+        var prefix = 'http';
+        if (url.substr(0, prefix.length) !== prefix)
+        {
+            url = "http://" + url;
+        }
+        window.location.href = url;
+    }    
+
+
+}
+
+
+for(var i=0; i<comments.length;i++){
+    urlify(comments[i]);
+}
+  
+
 xhttp.open('GET', 'api/stats/', true);
 xhttp.send();
