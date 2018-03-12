@@ -39,7 +39,7 @@ class SessionsController extends Controller {
               $_SESSION['failed_attempts'] = 0; // Added
               session_regenerate_id(); // Added
               //setcookie("user", $username, '/', null, false, 1); // Changed
-              //setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed 
+              //setcookie("password",  $_POST['password'], '/', null, false, 1); // Changed
               // Have removed this
               /*
               if ($this->userRep->getAdmin($username)){
@@ -57,7 +57,7 @@ class SessionsController extends Controller {
           }
           else {
             $errors = [
-                "Your username and your password don't match."
+                "Your username and your password don't match or your account is not activated"
             ];
             if (!$refresh) {
               $_SESSION['failed_attempts'] = ++$_SESSION['failed_attempts'];  // Added

@@ -12,10 +12,12 @@ class UsersModel extends Model {
     public function login($username, $passwordHash) {
         $userRow = $this->getUserRow($username);
         if($userRow) {
+          if($userRow->active==='1'){ //does not work needs to be added to sessionscontroller
             if($userRow->password === $passwordHash) {
                 $_SESSION['auth'] = $userRow->id;
                 return true;
             }
+          }
         }
         return false;
     }
@@ -26,29 +28,39 @@ class UsersModel extends Model {
             exit;
         }
     }
-    
+
     public function getUserRow($username){
         return App::getDb()->query('SELECT * FROM users WHERE username = "' . $username .'"', true);
     }
-    
+
     public function getPasswordHash($username){
         $userRow = $this->getUserRow($username);
         return $userRow->password;
     }
-    
+
     public function getId($username){
         $userRow = $this->getUserRow($username);
         return $userRow->id;
     }
-    
+
     public function getEmail($username){
         $userRow = $this->getUserRow($username);
         return $userRow->email;
     }
-    
+
     public function getAdmin($username){
         $userRow = $this->getUserRow($username);
         return $userRow->admin;
+    }
+
+    public function getActive($username){
+        $userRow = $this->getUserRow($username);
+        return $userRow->active;
+    }
+
+    public function getActiveHash($username){
+        $userRow = $this->getUserRow($username);
+        return $userRow->active;
     }
 
 }

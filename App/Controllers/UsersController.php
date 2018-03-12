@@ -104,10 +104,12 @@ class UsersController extends Controller {
                     'password'   => hash('sha256', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
                     'admin'      => 0,
-                    'email'      => $email // Added because of error when there is no default for email, can maybe be removed after email is implemented
+                    'email'      => $email, // Added because of error when there is no default for email, can maybe be removed after email is implemented
+                    'active'     => 0,
+                    'active_hash'=> md5(rand(0,1000))
+
                 ]);
     }
-
 
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
@@ -121,6 +123,12 @@ class UsersController extends Controller {
             if($this->registrationIsValid($validator, $username, $email, $password, $password_verification)) {
 
                 $this->createNewUser($username, $email, $password, $password_verification);
+//start test
+
+                $mail = new Mailer;
+                                              // Passing `true` enables exceptions
+
+//stop test
 
                 $this->render('pages/registration.twig', [
                 'title'       => 'Registrate',

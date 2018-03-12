@@ -16,11 +16,11 @@ dev:
         cache: false
     salt: 'd@3MqemJGlE!0v5g'
     mail:
-        from: 'root@root.com'
-        host: 'localhost'
-        username: null
-        password: null
-        port: 1025
+        from: 'tdt4237mailer@gmail.com'
+        host: 'smtp.gmail.com'
+        username: 'tdt4237mailer@gmail.com'
+        password: 'YF96YtnqvoPt'
+        port: '465'
 
 prod:
     name: 'Pokedex'
