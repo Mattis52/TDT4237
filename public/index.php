@@ -5,6 +5,7 @@ use \App\System\App;
 use \App\System\Router\Router;
 use \App\System\Settings;
 use \App\Models\UsersModel;
+use \App\System\Auth;
 
 session_start();
 
@@ -51,6 +52,7 @@ $router = new Router($_GET);
 
 
 $router->get('/', function() {
+    App::isLoggedIn();
     $controller = new \App\Controllers\ProductsController();
     $controller->blank();
 });

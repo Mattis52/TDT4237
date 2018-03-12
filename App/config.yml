@@ -3,13 +3,14 @@ environment: 'dev'
 dev:
     name: 'Pokedex'
     description: 'Just a simple inventory manager'
-    url: 'http://localhost:80/'
+    url: 'http://localhost:8080/'
     database:
         username: 'root'
         password: ''
         name: 'inventory'
         host: 'localhost'
         type: 'mysql'
+        port: 3306
     debug: true
     twig:
         cache: false
@@ -24,13 +25,14 @@ dev:
 prod:
     name: 'Pokedex'
     description: 'Just a simple inventory manager'
-    url: 'http://localhost:80/'
+    url: 'http://localhost:8080/'
     database:
         username: 'root'
         password: ''
         name: 'inventory'
         host: 'localhost'
         type: 'mysql'
+        port: 3306
     debug: false
     twig:
         cache: false
