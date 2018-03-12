@@ -113,6 +113,7 @@ class UsersController extends Controller {
 
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
+        $mail=new Mailer;
         $validator = New FormValidator;
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
@@ -123,12 +124,6 @@ class UsersController extends Controller {
             if($this->registrationIsValid($validator, $username, $email, $password, $password_verification)) {
 
                 $this->createNewUser($username, $email, $password, $password_verification);
-//start test
-
-                $mail = new Mailer;
-                                              // Passing `true` enables exceptions
-
-//stop test
 
                 $this->render('pages/registration.twig', [
                 'title'       => 'Registrate',

@@ -7,18 +7,20 @@ class Mailer extends PHPMailer {
 
     public function __construct() { //gets stuff from settings.php and config.yml
         parent::__construct();      //takes from dev environment under mail:
+        try{
         $this->isSMTP();
         $this->SMTPAuth = true;
-        $this->Host        = Settings::getConfig()['mail']['host'];
-        $this->Username    = Settings::getConfig()['mail']['username'];
-        $this->Password    = Settings::getConfig()['mail']['password'];
-        $this->Port        = Settings::getConfig()['mail']['port'];
-        
+        $this->Host        = 'smtp.gmail.com';   //Settings::getConfig()['mail']['host'];
+        $this->Username    = 'tdt4237mailer@gmail.com';  //Settings::getConfig()['mail']['username'];
+        $this->Password    = 'YF96YtnqvoPt';  //Settings::getConfig()['mail']['password'];
+        $this->SMTPSecure  = 'tls';
+        $this->Port        = '587';  //Settings::getConfig()['mail']['port'];
+
         $this->addAddress('tordsta@stud.ntnu.no', 'Joe User');     // Add a recipient
         $this->isHTML(true);                                  // Set email format to HTML
         $this->Subject = 'Here is the subject';
         $this->Body    = 'This is the HTML message body <b>in bold!</b>';
-
+        /*
         $this->SMTPOptions = array(
             'ssl' => array(
                 'verify_peer'       => false,
@@ -26,9 +28,14 @@ class Mailer extends PHPMailer {
                 'allow_self_signed' => true
             )
         );
-        $this->send();
-
-        echo 'Message has been sent';
+        */
+        if($this->send()){
+          echo 'Message has been sent';
+        }
+        echo '1hello';
+        } catch (Exception $e) {
+            echo 'Message could not be sent. Mailer Error: ', $this->ErrorInfo;
+        }
 
         /*
         $mail->setFrom('from@example.com', 'Mailer');
