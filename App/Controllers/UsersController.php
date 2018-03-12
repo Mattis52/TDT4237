@@ -217,7 +217,6 @@ class UsersController extends Controller {
     }
 
     public function viewSQL($id) {
-
         $logged_in_username = $_SESSION['auth']; // Changed
         $is_admin = $this->userRep->getAdmin($logged_in_username); // Changed
         if ($is_admin === '1'){ // Changed
