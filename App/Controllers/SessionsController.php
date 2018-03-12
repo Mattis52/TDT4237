@@ -73,7 +73,6 @@ class SessionsController extends Controller {
               // Increase time interval
               $this->increase_session_lockout();
                             }
-            //App::redirect('signin'); // Added, to empty POST form TODO not done
           }
           $_SESSION['last_password'] = $_POST['password'];
         }
@@ -90,8 +89,7 @@ class SessionsController extends Controller {
       ]);
     }
 
-    public function logout() { // TODO: is this every used?
-      echo "Logout in SessionsController"; die;
+    public function logout() {
       session_destroy(); // Added
       setcookie('user', '', time()-3600, '/', null, false, 1); // Added
       App::redirect();
