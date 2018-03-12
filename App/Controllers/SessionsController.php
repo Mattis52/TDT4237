@@ -72,7 +72,7 @@ class SessionsController extends Controller {
             else if ( $_SESSION['failed_attempts'] >3) {
               // Increase time interval
               $this->increase_session_lockout();
-                            }
+            }
           }
           $_SESSION['last_password'] = $_POST['password'];
         }
