@@ -18,7 +18,7 @@ class CommentsController extends Controller {
             $model->create([
                 'created_at' => date('Y-m-d H:i:s'),
                 'user'       => $_SESSION['auth'], // Changed from COOKIE['user']
-                'text'       => $text
+                'text'       => htmlspecialchars($text)
             ]);
         }
     App::redirect('dashboard');
