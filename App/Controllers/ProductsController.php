@@ -101,11 +101,11 @@ class ProductsController extends Controller {
 
                 $model = new ProductsModel();
                 $model->create([
-                    'title'       => $title,
-                    'description' => $description,
-                    'category'    => $category,
-                    'price'       => $price,
-                    'quantity'    => $quantity,
+                    'title'       => htmlspecialchars($title),
+                    'description' => htmlspecialchars($description),
+                    'category'    => htmlspecialchars($category),
+                    'price'       => htmlspecialchars($price),
+                    'quantity'    => htmlspecialchars($quantity),
                     'media'       => $media_url,
                     'created_at'  => date('Y-m-d H:i:s'),
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
@@ -176,11 +176,11 @@ class ProductsController extends Controller {
                 if($validator->isValid()) {
                     $model = new ProductsModel();
                     $model->update($id, [
-                        'title'       => $title,
-                        'description' => $description,
-                        'category'    => $category,
-                        'price'       => $price,
-                        'quantity'    => $quantity
+                        'title'       => htmlspecialchars($title),
+                        'description' => htmlspecialchars($description),
+                        'category'    => htmlspecialchars($category),
+                        'price'       => htmlspecialchars($price),
+                        'quantity'    => htmlspecialchars($quantity)
                     ]);
 
                     $revisions = new RevisionsModel();

@@ -37,8 +37,8 @@ class CategoriesController extends Controller {
             if($validator->isValid()) {
                 $model = new CategoriesModel();
                 $model->create([
-                    'title'       => $title,
-                    'description' => $description,
+                    'title'       => htmlspecialchars($title),
+                    'description' => htmlspecialchars($description),
                     'created_at'  => date('Y-m-d H:i:s'),
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
                 ]);
@@ -85,8 +85,8 @@ class CategoriesController extends Controller {
                 if($validator->isValid()) {
                     $model = new CategoriesModel();
                     $model->update($id, [
-                        'title'       => $title,
-                        'description' => $description
+                        'title'       => htmlspecialchars($title),
+                        'description' => htmlspecialchars($description)
                     ]);
 
                     $revisions = new RevisionsModel();
