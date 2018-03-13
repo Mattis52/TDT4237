@@ -15,15 +15,15 @@ class SessionsController extends Controller {
 
       $ip = $_SERVER['REMOTE_ADDR'];
       $this->create_row_if_not_exists($ip);
-      
+
       if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) { // Added
           $username = isset($_POST['username']) ? $_POST['username'] : '';
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
-          
+
           $last_password = isset($_SESSION['last_password']) ? $_SESSION['last_password'] : '';
-          $this_password = $_POST['password'];
-          
+          $this_password = $password;
+
           $refresh = $this->is_refresh($last_password, $this_password);
           $locked_out = $this->is_locked_out($ip);
 
@@ -43,7 +43,7 @@ class SessionsController extends Controller {
               $_SESSION['password']   = $password;
 
               App::redirect('dashboard');
-          } 
+          }
           else {
             $errors = [
                 "Your username and your password don't match."
@@ -57,11 +57,11 @@ class SessionsController extends Controller {
             else if( $this->get_existing_attempts($ip) === 3 and !$refresh) {
               $this->increase_session_lockout();
               array_push($errors, "You have had 3 failed logins. Your account is now locked for " . $this->get_locked_sec($ip) . " seconds.");
-            } 
-            
+            }
+
           }
-          
-          $_SESSION['last_password'] = $_POST['password'];
+
+          $_SESSION['last_password'] = $password;
         }
       }
 
@@ -100,7 +100,7 @@ class SessionsController extends Controller {
         return false;
       }
     }
-    
+
     // Added
     private function calculate_time($failed_attempts) {
       $attempts = $failed_attempts - 3;
@@ -110,7 +110,7 @@ class SessionsController extends Controller {
       }
       return $time;
     }
-  
+
     // Added
     private function register_failed_attempt($ip) {
       $this->create_row_if_not_exists($ip);
@@ -129,7 +129,7 @@ class SessionsController extends Controller {
       } else {
         $query = "UPDATE lockout SET failed_attempts=$failed_attempts WHERE ip='{$ip}'";
       }
-      
+
       App::getDb()->execute($query);
     }
 
@@ -144,7 +144,7 @@ class SessionsController extends Controller {
     }
 
     // Added
-    private function get_locked_until($ip) {    
+    private function get_locked_until($ip) {
       $query = "SELECT locked_until FROM lockout WHERE ip = '{$ip}'";
 
       $res = App::getDb()->query($query, true);
@@ -171,7 +171,7 @@ class SessionsController extends Controller {
     // Added
     private function create_row_if_not_exists($ip) {
       $query = "SELECT * FROM lockout WHERE ip = '{$ip}'";
-  
+
       $result = App::getDb()->query($query, true);
       if ($result == "" ) {
         $this->create_lockout_row($ip);
