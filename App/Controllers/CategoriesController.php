@@ -71,7 +71,7 @@ class CategoriesController extends Controller {
     }
 
     public function edit($id) {
-        $model = new CategoriesModel(); // Added 
+        $model = new CategoriesModel(); // Added
         $category = $model->find($id); // Added
         if ($this->isOwner($category)) {
             if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
@@ -93,6 +93,7 @@ class CategoriesController extends Controller {
                     $revisions->create([
                         'type'    => 'categories',
                         'type_id' => $id,
+                        'date' => date('Y-m-d H:i:s'),
                         'user'    => $_SESSION['auth']
                     ]);
 
@@ -144,11 +145,11 @@ class CategoriesController extends Controller {
         $model = new CategoriesModel(); // Added
         $category = $model->find($id); // Added
         if ($this->isOwner($category)) { // Added if-else loop
-            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) { 
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
                 foreach($products as $product){
                     $model2->delete($product->id);
                 }
-                
+
                 $model = new CategoriesModel();
                 $model->delete($id);
                 App::redirect('categories');
@@ -165,7 +166,7 @@ class CategoriesController extends Controller {
                 ]);
             }
         }
-        else { // Added 
+        else { // Added
             App::error();
         }
     }
@@ -187,7 +188,7 @@ class CategoriesController extends Controller {
             App::error();
         }
     }
-    
+
     public function api($id = null) {
         if($id) {
             $model = new CategoriesModel();
