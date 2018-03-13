@@ -11,7 +11,7 @@ dev:
         host: 'localhost'
         type: 'mysql'
         port: 3306
-    debug: true
+    debug: false
     twig:
         cache: false
     salt: 'd@3MqemJGlE!0v5g'
