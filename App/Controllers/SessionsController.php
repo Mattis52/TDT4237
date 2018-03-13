@@ -36,14 +36,7 @@ class SessionsController extends Controller {
           if($this->auth->checkCredentials($username, $password)) {
               $this->reset_failed_attempts($ip); // Added
               session_regenerate_id(); // Added
-              // Have removed this
-              /*
-              if ($this->userRep->getAdmin($username)){
-                  setcookie("admin", 'yes', '/', null, false, 1); // Changed
-              }else{
-                  setcookie("admin", 'no', '/', null, false, 1); // Changed
-              }
-              */
+              // Removed code that set admin-attribute in cookie
               $_SESSION['auth']       = $username;
               $_SESSION['id']         = $this->userRep->getId($username);
               $_SESSION['email']      = $this->userRep->getEmail($username);

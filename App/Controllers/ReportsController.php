@@ -104,7 +104,7 @@ class ReportsController extends Controller {
             }
         }
         else { // Added
-            App::error404();
+            App::error();
         }
     }
 
