@@ -121,6 +121,7 @@ class UsersController extends Controller {
             $email                 = isset($_POST['email']) ? $_POST['email'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
             $password_verification = isset($_POST['password_verification']) ? $_POST['password_verification'] : '';
+            //$activeHash            = isset($_POST['activeHash']) ? $_POST['activeHash'] : '';
 
             if($this->registrationIsValid($validator, $username, $email, $password, $password_verification)) {
 

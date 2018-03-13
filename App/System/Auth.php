@@ -19,7 +19,7 @@ class Auth{
             return false;
         }
 
-        if ($user->active === 0){
+        if ($user->active != 1){
             return false;
         }
 

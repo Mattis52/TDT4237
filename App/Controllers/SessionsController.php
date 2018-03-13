@@ -6,6 +6,7 @@ use \App\System\Settings;
 use \App\System\FormValidator;
 use \App\Controllers\Controller;
 use \App\Models\UsersModel;
+use \App\Models\Model;
 use \App\System\Auth;
 
 class SessionsController extends Controller {
@@ -24,6 +25,10 @@ class SessionsController extends Controller {
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
 
+          $email = isset($_POST['email']) ? $_POST['email'] : '';
+
+          $activeHash = isset($_POST['activeHash']) ? $_POST['activeHash'] : '';
+
           //add
 
           $refresh = $_SESSION['last_password']  === $password;
@@ -37,6 +42,18 @@ class SessionsController extends Controller {
           }
         }
         else {
+          $userRow = new UsersModel;
+          $userRow->getUserRow($username);
+          $activeDb = (isset($userRow->active) ? $userRow->active : false);
+          $active_hashDb = (isset($userRow->active_hash) ? $userRow->active_hash : false);
+          $emailDb = (isset($userRow->email) ? $userRow->email : false);
+          $id = (isset($userRow->id) ? $userRow->id : false);
+          if($activeDb == 0 && $active_hashDb == $activeHash && $emailDb == $email){
+            //$model = new UsersModel();
+            $userRow->update($id, [
+              'active' => 1
+            ]);
+          }
           if($this->auth->checkCredentials($username, $password)) {
               $_SESSION['failed_attempts'] = 0; // Added
               session_regenerate_id(); // Added
@@ -56,6 +73,7 @@ class SessionsController extends Controller {
               $_SESSION['password']   = $password;
 
               App::redirect('dashboard');
+
           }
           else {
             $errors = [
