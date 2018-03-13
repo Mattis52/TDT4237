@@ -11,6 +11,7 @@
                     <h2>{{ data.title }}</h2>
                     <p>{{ data.description }}</p>
                 </div>
+                <input type="hidden" name="token" value="{{ form_token() }}" />
             </div>
             
             {% if products %}
