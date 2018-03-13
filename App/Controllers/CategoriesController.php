@@ -133,7 +133,7 @@ class CategoriesController extends Controller {
             }
         }
         else { // Added
-            App::error404();
+            App::error();
         }
     }
 
@@ -166,7 +166,7 @@ class CategoriesController extends Controller {
             }
         }
         else { // Added 
-            App::error404();
+            App::error();
         }
     }
 

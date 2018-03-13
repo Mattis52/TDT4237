@@ -42,7 +42,6 @@ class ProductsController extends Controller {
         foreach ($comments as $comment){
             $comment->created_at = substr($comment->created_at, 11, 18);
         }
-        //echo var_dump($comments);die;
         
         $stats = [
             'value' => $value,
@@ -239,7 +238,7 @@ class ProductsController extends Controller {
             }
         }
         else { // Added
-            App::error404();
+            App::error();
         }
     }
 
@@ -267,7 +266,7 @@ class ProductsController extends Controller {
             }
         } 
         else { // Added
-            App::error404();
+            App::error();
         }
     }
 
@@ -319,7 +318,7 @@ class ProductsController extends Controller {
             echo var_dump($this->productRep->find($id)); die;
         } 
         else { // Added
-            App::error404();
+            App::error();
         }
     }
 
