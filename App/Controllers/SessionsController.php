@@ -36,8 +36,6 @@ class SessionsController extends Controller {
           if($this->auth->checkCredentials($username, $password)) {
               $this->reset_failed_attempts($ip); // Added
               session_regenerate_id(); // Added
-              //setcookie("user", $username, '/', null, false, true); // Changed
-              //setcookie("password",  $_POST['password'], '/', null, false, true); // Changed 
               // Have removed this
               /*
               if ($this->userRep->getAdmin($username)){
