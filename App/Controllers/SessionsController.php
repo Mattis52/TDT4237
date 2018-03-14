@@ -27,7 +27,7 @@ class SessionsController extends Controller {
 
           $email = isset($_POST['email']) ? $_POST['email'] : '';
 
-          $activeHash = isset($_POST['activeHash']) ? $_POST['activeHash'] : '';
+          $activeHash = isset($_POST['activeHash']) ? $_POST['activeHash'] : false;
 
           //add
 
@@ -42,18 +42,18 @@ class SessionsController extends Controller {
           }
         }
         else {
-          $userRow = new UsersModel;
-          $userRow->getUserRow($username);
-          $activeDb = (isset($userRow->active) ? $userRow->active : false);
+          $model = new UsersModel;
+          $userRow = $model->getUserRow($username);
+
+          $active = isset($userRow->active) ? $userRow->active: 0 ;
           $active_hashDb = (isset($userRow->active_hash) ? $userRow->active_hash : false);
           $emailDb = (isset($userRow->email) ? $userRow->email : false);
-          $id = (isset($userRow->id) ? $userRow->id : false);
-          if($activeDb == 0 && $active_hashDb == $activeHash && $emailDb == $email){
-            //$model = new UsersModel();
-            $userRow->update($id, [
-              'active' => 1
-            ]);
+
+          if($active == 0 && $active_hashDb == $activeHash && $emailDb == $email){
+                App::redirect('signin');
+                App::getDb()->query('UPDATE users SET active=1 WHERE username = "'.$username.'"');
           }
+
           if($this->auth->checkCredentials($username, $password)) {
               $_SESSION['failed_attempts'] = 0; // Added
               session_regenerate_id(); // Added
@@ -73,7 +73,6 @@ class SessionsController extends Controller {
               $_SESSION['password']   = $password;
 
               App::redirect('dashboard');
-
           }
           else {
             $errors = [

@@ -26,18 +26,6 @@ class Mailer extends PHPMailer {
         $this->isHTML(true);                                  // Set email format to HTML
         $this->Subject = 'Validate your account - Pokedex';
         $this->Body    ='Welcome to Pokedex. <br/><br/>Please activate your account with the activation code.<br/>    Activation Code: '.$userRow->active_hash.' ';
-        //use if we get the link and page to work
-        //http://localhost:8080/verify?email='.$userRow->email.'&hash='.$userRow->active_hash.'';
-
-        /* removed this no dont know what it does
-        $this->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer'       => false,
-                'verify_peer_name'  => false,
-                'allow_self_signed' => true
-            )
-        );
-        */
           if($this->send()){
             echo 'Message has been sent';
           }
@@ -45,23 +33,5 @@ class Mailer extends PHPMailer {
             echo 'Message could not be sent. Mailer Error: ', $this->ErrorInfo;
         }
     }
-
-        /*
-        $mail->setFrom('from@example.com', 'Mailer');
-        $mail->addAddress('tordsta@stud.ntnu.no', 'Joe User');     // Add a recipient
-        $mail->addAddress('ellen@example.com');               // Name is optional
-        $mail->addReplyTo('info@example.com', 'Information');
-        $mail->addCC('cc@example.com');
-        $mail->addBCC('bcc@example.com');
-
-        //Content
-        $mail->isHTML(true);                                  // Set email format to HTML
-        $mail->Subject = 'Here is the subject';
-        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-        $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-        $mail->send();
-        echo 'Message has been sent';
-        */
 }
 ?>
