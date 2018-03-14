@@ -11,6 +11,7 @@ class UsersModel extends Model {
     protected $table = "users";
 
     public function login($username, $passwordHash, $email, $activeHash) {
+            $userRow = $this->getUserRow($username);
             if($userRow) {
                 if($userRow->password === $passwordHash) {
                     $_SESSION['auth'] = $userRow->id;
