@@ -62,7 +62,7 @@ class UsersModel extends Model {
 
     public function getActiveHash($username){
         $userRow = $this->getUserRow($username);
-        return $userRow->active;
+        return $userRow->active_hash;
     }
 
 }
