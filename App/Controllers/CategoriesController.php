@@ -37,8 +37,8 @@ class CategoriesController extends Controller {
             if($validator->isValid()) {
                 $model = new CategoriesModel();
                 $model->create([
-                    'title'       => $title,
-                    'description' => $description,
+                    'title'       => htmlspecialchars($title),
+                    'description' => htmlspecialchars($description),
                     'created_at'  => date('Y-m-d H:i:s'),
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
                 ]);
@@ -71,7 +71,7 @@ class CategoriesController extends Controller {
     }
 
     public function edit($id) {
-        $model = new CategoriesModel(); // Added 
+        $model = new CategoriesModel(); // Added
         $category = $model->find($id); // Added
         if ($this->isOwner($category)) {
             if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
@@ -85,14 +85,15 @@ class CategoriesController extends Controller {
                 if($validator->isValid()) {
                     $model = new CategoriesModel();
                     $model->update($id, [
-                        'title'       => $title,
-                        'description' => $description
+                        'title'       => htmlspecialchars($title),
+                        'description' => htmlspecialchars($description)
                     ]);
 
                     $revisions = new RevisionsModel();
                     $revisions->create([
                         'type'    => 'categories',
                         'type_id' => $id,
+                        'date' => date('Y-m-d H:i:s'),
                         'user'    => $_SESSION['auth']
                     ]);
 
@@ -133,8 +134,7 @@ class CategoriesController extends Controller {
             }
         }
         else { // Added
-            echo "You don't own this category, and thereby you can't edit it.";
-            App::error403();
+            App::error();
         }
     }
 
@@ -145,11 +145,11 @@ class CategoriesController extends Controller {
         $model = new CategoriesModel(); // Added
         $category = $model->find($id); // Added
         if ($this->isOwner($category)) { // Added if-else loop
-            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) { 
+            if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
                 foreach($products as $product){
                     $model2->delete($product->id);
                 }
-                
+
                 $model = new CategoriesModel();
                 $model->delete($id);
                 App::redirect('categories');
@@ -166,9 +166,8 @@ class CategoriesController extends Controller {
                 ]);
             }
         }
-        else { // Added 
-            echo "You don't own this category, and thereby can't delete it.";
-            App::error403();
+        else { // Added
+            App::error();
         }
     }
 
@@ -189,7 +188,7 @@ class CategoriesController extends Controller {
             App::error();
         }
     }
-    
+
     public function api($id = null) {
         if($id) {
             $model = new CategoriesModel();

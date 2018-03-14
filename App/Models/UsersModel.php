@@ -31,7 +31,7 @@ class UsersModel extends Model {
     }
 
     public function getUserRow($username){
-        return App::getDb()->query('SELECT * FROM users WHERE username = "' . $username .'"', true);
+        return parent::query('SELECT * FROM users WHERE username = ?', [$username] , true);
     }
 
     public function getPasswordHash($username){

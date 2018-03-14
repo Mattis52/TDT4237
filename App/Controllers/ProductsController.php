@@ -42,7 +42,6 @@ class ProductsController extends Controller {
         foreach ($comments as $comment){
             $comment->created_at = substr($comment->created_at, 11, 18);
         }
-        //echo var_dump($comments);die;
         
         $stats = [
             'value' => $value,
@@ -101,11 +100,11 @@ class ProductsController extends Controller {
 
                 $model = new ProductsModel();
                 $model->create([
-                    'title'       => $title,
-                    'description' => $description,
-                    'category'    => $category,
-                    'price'       => $price,
-                    'quantity'    => $quantity,
+                    'title'       => htmlspecialchars($title),
+                    'description' => htmlspecialchars($description),
+                    'category'    => htmlspecialchars($category),
+                    'price'       => htmlspecialchars($price),
+                    'quantity'    => htmlspecialchars($quantity),
                     'media'       => $media_url,
                     'created_at'  => date('Y-m-d H:i:s'),
                     'user'        => $_SESSION['auth'] // Changed from COOKIE['user']
@@ -176,11 +175,11 @@ class ProductsController extends Controller {
                 if($validator->isValid()) {
                     $model = new ProductsModel();
                     $model->update($id, [
-                        'title'       => $title,
-                        'description' => $description,
-                        'category'    => $category,
-                        'price'       => $price,
-                        'quantity'    => $quantity
+                        'title'       => htmlspecialchars($title),
+                        'description' => htmlspecialchars($description),
+                        'category'    => htmlspecialchars($category),
+                        'price'       => htmlspecialchars($price),
+                        'quantity'    => htmlspecialchars($quantity)
                     ]);
 
                     $revisions = new RevisionsModel();
@@ -239,8 +238,7 @@ class ProductsController extends Controller {
             }
         }
         else { // Added
-            echo "You don't own this product, and thereby you can't edit it.";
-            App::error403();
+            App::error();
         }
     }
 
@@ -268,8 +266,7 @@ class ProductsController extends Controller {
             }
         } 
         else { // Added
-            echo "You don't own this product, and thereby can't delete it.";
-            App::error403();
+            App::error();
         }
     }
 
@@ -321,8 +318,7 @@ class ProductsController extends Controller {
             echo var_dump($this->productRep->find($id)); die;
         } 
         else { // Added
-            App::error403();
-            echo "You don't own this product.";
+            App::error();
         }
     }
 

@@ -3,6 +3,7 @@ namespace App\System;
 
 use \App\System\Settings;
 use \App\Controllers\Controller;
+use \App\System\Auth;
 
 class App {
 
@@ -110,6 +111,12 @@ class App {
         if(!isset($_SESSION['auth'])) {
             self::redirect('signin');
             exit;
+        }
+    
+    }
+    public static function isLoggedIn(){
+        if(Auth::isLoggedIn()){
+            self::redirect('dashboard');
         }
     }
 

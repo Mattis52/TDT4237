@@ -17,6 +17,8 @@ class Database {
         $this->db_password = $db_password;
         $this->db_host     = $db_host;
         $this->db_name     = $db_name;
+
+        $this->create_lockout_table(); // Added
     }
 
     private function getPDO() {
@@ -68,6 +70,18 @@ class Database {
             $req = $this->getPDO()->prepare($statement);
             $req->execute($attributes);
         }
+    }
+
+    // Added
+    private function create_lockout_table() {
+      $query = "CREATE TABLE IF NOT EXISTS lockout (
+        ip VARCHAR(46),
+        failed_attempts INT(5),
+        locked_until TIMESTAMP,
+        PRIMARY KEY(ip)
+      )";
+
+      $this->execute($query);
     }
 
 }

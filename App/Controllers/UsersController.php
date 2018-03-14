@@ -226,12 +226,17 @@ class UsersController extends Controller {
     }
 
     public function viewSQL($id) {
-        echo var_dump($this->userRep->find($id)); die;
+        $logged_in_username = $_SESSION['auth']; // Changed
+        $is_admin = $this->userRep->getAdmin($logged_in_username); // Changed
+        if ($is_admin === '1'){ // Changed
+            echo var_dump($this->userRep->find($id)); die;
+        } else { // Added
+            App::error(); // Added
+        }
     }
 
     public function logout() {
         setcookie('user', '', time()-3600, '/', null, false, 1); // Added
-        //setcookie('admin', '', time()-3600, '/', null, false, 1); // Added
         setcookie('password', '', time()-3600, '/', null, false, 1); // Added
         session_unset(); // Added
         session_destroy();
