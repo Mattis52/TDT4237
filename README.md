@@ -1,3 +1,14 @@
+## Steps to launch using docker and docker-compose
+
+1. docker-compose up -d --build
+
+2. docker-compose exec mysql bash
+
+3. mysql -p < app/sql.txt
+
+Application is now available at localhost:8080
+
+
 In the process of patching the web application, it may be useful to run it locally on your own computer. Below is a set of working instructions for deploying and running the web application on a Windows machine. It has been tested on a fresh install of Windows 10 on a VM. The setup will likely be similar with Mac OS X, but I don't have a ready made procedure for deploying on Mac.
 
 1. In order to run PHP on windows you must download and install Visual C++ Redistributable for Visual Studio 2015. https://www.microsoft.com/en-us/download/details.aspx?id=48145 
