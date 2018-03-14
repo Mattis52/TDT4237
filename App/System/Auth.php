@@ -19,11 +19,16 @@ class Auth{
             return false;
         }
 
+        if ($user->active != 1){
+            return false;
+        }
+
         if ($passwordHash === $this->userRep->getPasswordhash($username)){
             return true;
         }else{
             return false;
         }
+
     }
 
     public function isAdmin(){

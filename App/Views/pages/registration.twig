@@ -23,10 +23,15 @@
         </div>
 
         <div class="form-control">
+            <label for="email">Email</label>
+            <input type="Email" name="email" id="email" placeholder="Your email">
+        </div>
+
+        <div class="form-control">
             <label for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Your password">
         </div>
-        
+
         <div class="form-control">
             <label for="password">Password</label>
             <input type="password" name="password_verification" id="password_verification" placeholder="Retype your password">
@@ -37,7 +42,7 @@
             <input type="hidden" name="token" value="{{ form_token() }}" />
         </div>
     </form>
-    
+
     {% if message %}
         <div class="form-flash">
                 <b style="color:#00FF00">{{ message }}</b>
@@ -45,9 +50,9 @@
         		<br>
         </div>
     {% endif %}
-    
+
     Already have a user? Click <a href="signin">here</a> to sign in.
-    
+
 </div>
 
 {% endblock %}
