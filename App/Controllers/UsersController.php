@@ -73,13 +73,17 @@ class UsersController extends Controller {
         }
     }
 
-    public function registrationIsValid($validator, $username, $password, $password_verification): bool {
+    public function registrationIsValid($validator, $username, $email, $password, $password_verification): bool {
 
             if ($validator->notEmpty('username',$username, "Your username can't be empty")){
                 $validator->validUsername('username2', $username, "Your username is not valid (no spaces, uppercase, special character)");
             }
 
             $validator->availableUsername('username', $username, "Your username is not available");
+
+            if ($validator->notEmpty('email', $email, "Your email can't be empty")){
+              $validator->validEmail('email', $email, "Your email is not valid");
+            }
 
             if ($validator->notEmpty('password',$password, "Your password can't be empty")){
                 $validator->validPassword('password2', $username, $password, $password_verification); // Changed, added so it sends username too
@@ -92,7 +96,7 @@ class UsersController extends Controller {
             }
     }
 
-    public function createNewUser($username, $password, $password_verification){
+    public function createNewUser($username, $email, $password, $password_verification){
         $model = new UsersModel();
 
                 $model->create([
@@ -100,22 +104,27 @@ class UsersController extends Controller {
                     'password'   => hash('sha256', Settings::getConfig()['salt'] . $password),
                     'created_at' => date('Y-m-d H:i:s'),
                     'admin'      => 0,
-                    'email'      => 'test@test.com' // Added because of error when there is no default for email, can maybe be removed after email is implemented
-                ]);
-    }
+                    'email'      => $email, // Added because of error when there is no default for email, can maybe be removed after email is implemented
+                    'active'     => 0,
+                    'active_hash'=> md5(rand(0,1000))
 
+                ]);
+        new Mailer($username); //sends verification email
+    }
 
     /* This function is used when a non-administrator registers a new user*/
     public function registrateUser() {
+
         $validator = New FormValidator;
         if(!empty($_POST) && Auth::checkCSRF($_POST["token"])) {
             $username              = isset($_POST['username']) ? $_POST['username'] : '';
+            $email                 = isset($_POST['email']) ? $_POST['email'] : '';
             $password              = isset($_POST['password']) ? $_POST['password'] : '';
             $password_verification = isset($_POST['password_verification']) ? $_POST['password_verification'] : '';
 
-            if($this->registrationIsValid($validator, $username, $password, $password_verification)) {
+            if($this->registrationIsValid($validator, $username, $email, $password, $password_verification)) {
 
-                $this->createNewUser($username, $password, $password_verification);
+                $this->createNewUser($username, $email, $password, $password_verification);
 
                 $this->render('pages/registration.twig', [
                 'title'       => 'Registrate',

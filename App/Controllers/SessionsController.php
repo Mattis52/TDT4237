@@ -6,6 +6,7 @@ use \App\System\Settings;
 use \App\System\FormValidator;
 use \App\Controllers\Controller;
 use \App\Models\UsersModel;
+use \App\Models\Model;
 use \App\System\Auth;
 
 class SessionsController extends Controller {
@@ -21,6 +22,10 @@ class SessionsController extends Controller {
 
           $password = isset($_POST['password']) ? hash('sha256', Settings::getConfig()['salt'] . $_POST['password']) : '';
 
+          $email = isset($_POST['email']) ? $_POST['email'] : '';
+
+          $activeHash = isset($_POST['activeHash']) ? $_POST['activeHash'] : false;
+
           $last_password = isset($_SESSION['last_password']) ? $_SESSION['last_password'] : '';
           $this_password = $password;
 
@@ -33,6 +38,18 @@ class SessionsController extends Controller {
           ];
         }
         else {
+          $model = new UsersModel;
+          $userRow = $model->getUserRow($username);
+
+          $active = isset($userRow->active) ? $userRow->active: 0 ;
+          $active_hashDb = (isset($userRow->active_hash) ? $userRow->active_hash : false);
+          $emailDb = (isset($userRow->email) ? $userRow->email : false);
+
+          if($active == 0 && $active_hashDb == $activeHash && $emailDb == $email){
+                App::redirect('signin');
+                App::getDb()->query('UPDATE users SET active=1 WHERE username = "'.$username.'"');
+          }
+
           if($this->auth->checkCredentials($username, $password)) {
               $this->reset_failed_attempts($ip); // Added
               session_regenerate_id(); // Added
@@ -46,7 +63,7 @@ class SessionsController extends Controller {
           }
           else {
             $errors = [
-                "Your username and your password don't match."
+                "Your username and your password don't match or your account is not activated"
             ];
             if (!$refresh) {
               $this->register_failed_attempt($ip); // Added

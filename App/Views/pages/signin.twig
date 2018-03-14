@@ -31,9 +31,20 @@
           </div>
 
           <div class="form-control">
+              <label for="email">Email (only required first time you login) </label>
+              <input type="text" name="email" id="email" placeholder="Your email" value="">
+          </div>
+
+          <div class="form-control">
+              <label for="activeHash">Validation Code (only required first time you login)</label>
+              <input type="text" name="activeHash" id="activeHash" placeholder="Your validation code" value="">
+          </div>
+
+          <div class="form-control">
          <input type="hidden" name="token" value="{{ form_token() }}" />
               <input type="submit" name="submit" value="Sign in">
           </div>
+          <p>The page will reload upon registration.</p>
       </form>
     {% endif %}
     <p>Don't have a user? Click <a href="registration">here</a> to register.</p>
