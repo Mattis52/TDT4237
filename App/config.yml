@@ -3,7 +3,7 @@ environment: 'dev'
 dev:
     name: 'Pokedex'
     description: 'Just a simple inventory manager'
-    url: 'http://localhost:8080/'
+    url: 'http://localhost:80/'
     database:
         username: 'root'
         password: ''
@@ -25,7 +25,7 @@ dev:
 prod:
     name: 'Pokedex'
     description: 'Just a simple inventory manager'
-    url: 'http://localhost:8080/'
+    url: 'http://localhost:80/'
     database:
         username: 'root'
         password: ''
