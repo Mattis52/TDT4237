@@ -1,10 +1,11 @@
 ## Steps to launch using docker and docker-compose
+1. update ports in config.yml 80 -> 8080
 
-1. docker-compose up -d --build
+2. docker-compose up -d --build
 
-2. docker-compose exec mysql bash
+3. docker-compose exec mysql bash
 
-3. mysql -p < app/sql.txt
+4. mysql -p < app/sql.txt
 
 Application is now available at localhost:8080
 
